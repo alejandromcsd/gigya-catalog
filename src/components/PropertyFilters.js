@@ -5,7 +5,7 @@ import AutoComplete from 'material-ui/AutoComplete'
 import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar'
 import RaisedButton from 'material-ui/FlatButton'
 import PhoneIcon from 'material-ui/svg-icons/hardware/phone-iphone'
-import RetailIcon from 'material-ui/svg-icons/action/shopping-cart'
+import RetailIcon from 'material-ui/svg-icons/action/done-all'
 import AirlineIcon from 'material-ui/svg-icons/device/airplanemode-active'
 import MailIcon from 'material-ui/svg-icons/communication/contact-mail'
 import GroupIcon from 'material-ui/svg-icons/action/group-work'
@@ -31,6 +31,9 @@ const styles = {
   toolbarTitle: {
     marginLeft: 10,
     minWidth: 120
+  },
+  toolbar: {
+    overflowX: 'scroll'
   }
 }
 
@@ -81,17 +84,22 @@ export class PropertyFilters extends React.Component {
   render () {
     const { keywords, filters } = this.props
     const { searchText } = this.state
+    // eslint-disable-next-line
+    const w = jQuery(window).width()
+    const filterLabel = w >= 1200
+      ? 'Or search by Customer, Implementation, AM, IC, TC, Url, Country, Platform, Category or Keyword'
+      : 'Or search by...'
 
     return (
       <div>
-        <Toolbar>
+        <Toolbar style={styles.toolbar}>
           <ToolbarGroup firstChild lastChild>
             <ToolbarTitle style={styles.toolbarTitle} text='Quick filters' />
             <RaisedButton
               style={styles.button}
-              label='Retail'
+              label='Consent'
               icon={<RetailIcon />}
-              onClick={() => this.actions.addFilter('Category: Retail')}
+              onClick={() => this.actions.addFilter('Keyword: Consent')}
             />
             <RaisedButton
               style={styles.button}
@@ -120,7 +128,7 @@ export class PropertyFilters extends React.Component {
           </ToolbarGroup>
         </Toolbar>
         <AutoComplete
-          floatingLabelText='Or search by Customer, Implementation, AM, IC, TC, Url, Country, Platform, Category or Keyword'
+          floatingLabelText={filterLabel}
           searchText={searchText}
           style={styles.autoComplete}
           listStyle={styles.autoCompleteList}

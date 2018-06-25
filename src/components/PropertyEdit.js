@@ -32,6 +32,10 @@ const styles = {
   },
   progress: {
     marginTop: 50
+  },
+  autoCompleteList: {
+    maxHeight: 200,
+    overflow: 'auto'
   }
 }
 
@@ -278,6 +282,7 @@ export default class PropertyEdit extends React.Component {
             floatingLabelText='Customer'
             searchText={customer}
             style={styles.autoComplete}
+            listStyle={styles.autoCompleteList}
             filter={AutoComplete.fuzzyFilter}
             dataSource={customersList}
             onUpdateInput={customer => this.setState({
@@ -307,6 +312,7 @@ export default class PropertyEdit extends React.Component {
             floatingLabelText='Account Manager'
             searchText={am}
             style={styles.autoComplete}
+            listStyle={styles.autoCompleteList}
             filter={AutoComplete.fuzzyFilter}
             dataSource={amList}
             onUpdateInput={am => this.setState({ am })}
@@ -321,6 +327,7 @@ export default class PropertyEdit extends React.Component {
             floatingLabelText='Implementation Consultant'
             searchText={ic}
             style={styles.autoComplete}
+            listStyle={styles.autoCompleteList}
             filter={AutoComplete.fuzzyFilter}
             dataSource={icList}
             onUpdateInput={ic => this.setState({ ic })}
@@ -335,6 +342,7 @@ export default class PropertyEdit extends React.Component {
             floatingLabelText='Technical Consultant'
             searchText={tc}
             style={styles.autoComplete}
+            listStyle={styles.autoCompleteList}
             filter={AutoComplete.fuzzyFilter}
             dataSource={tcList}
             onUpdateInput={tc => this.setState({ tc })}
@@ -349,6 +357,7 @@ export default class PropertyEdit extends React.Component {
             floatingLabelText='Country'
             searchText={country}
             style={styles.autoComplete}
+            listStyle={styles.autoCompleteList}
             filter={AutoComplete.fuzzyFilter}
             dataSource={countryList}
             onUpdateInput={country => this.setState({ country })}
@@ -363,6 +372,7 @@ export default class PropertyEdit extends React.Component {
             floatingLabelText='Platform'
             searchText={platform}
             style={styles.autoComplete}
+            listStyle={styles.autoCompleteList}
             filter={AutoComplete.fuzzyFilter}
             dataSource={platformList}
             onUpdateInput={platform => this.setState({ platform })}
@@ -377,6 +387,7 @@ export default class PropertyEdit extends React.Component {
             floatingLabelText='Category'
             searchText={category}
             style={styles.autoComplete}
+            listStyle={styles.autoCompleteList}
             filter={AutoComplete.fuzzyFilter}
             dataSource={categoryList}
             onUpdateInput={category => this.setState({ category })}

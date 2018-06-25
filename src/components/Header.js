@@ -7,6 +7,7 @@ import FlatButton from 'material-ui/FlatButton'
 import {ToolbarTitle} from 'material-ui/Toolbar'
 import propertyLogic from './logic/property.logic'
 import { logout, showProfile } from '../gigya'
+import { isMobile } from '../utils'
 
 const styles = {
   title: {
@@ -61,11 +62,13 @@ export default class Header extends React.Component {
           <div>
             {(currentUser && currentUser.profile) && (
               <div>
-                <ToolbarTitle style={styles.title} text={`Hi ${currentUser.profile.firstName}!`} />
+                <ToolbarTitle style={styles.title} text={isMobile() ? ' ' : `Hi ${currentUser.profile.firstName}!`} />
                 {/* <FlatButton style={styles.button} onClick={showCommunications} label='COMMUNICATIONS' />
                 <FlatButton style={styles.button} onClick={showPrivacy} label='PRIVACY' /> */}
                 <FlatButton style={styles.button} onClick={showProfile} label='PROFILE' />
+                { !isMobile() &&
                 <FlatButton style={styles.button} onClick={this.addImplementation} label='ADD NEW IMPLEMENTATION' />
+                }
                 <FlatButton style={styles.button} onClick={logout} label='LOGOUT' />
               </div>
             )}

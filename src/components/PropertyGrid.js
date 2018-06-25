@@ -14,8 +14,7 @@ const styles = {
   },
   gridList: {
     width: '100%',
-    height: '100%',
-    overflowY: 'auto'
+    height: '100%'
   },
   progress: {
     marginTop: 50
@@ -26,7 +25,7 @@ const styles = {
   },
   media: {
     maxHeight: 160,
-    overflowY: 'auto'
+    overflowY: 'hidden'
   }
 }
 
@@ -50,9 +49,12 @@ export class PropertyGrid extends React.Component {
     // eslint-disable-next-line
     // debugger;
 
-    if (resultsCount > 3 && window.innerWidth >= 900) return 4
-    if (resultsCount > 2 && window.innerWidth >= 660) return 3
-    if (resultsCount > 1 && window.innerWidth >= 530) return 2
+    // eslint-disable-next-line
+    var w = jQuery(window).width()
+
+    if (resultsCount > 3 && w >= 1200) return 4
+    if (resultsCount > 2 && w >= 1024) return 3
+    if (resultsCount > 1 && w >= 768) return 2
     return 1
   }
 
