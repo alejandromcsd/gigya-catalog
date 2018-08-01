@@ -4,7 +4,7 @@ import { put, call, take } from 'redux-saga/effects'
 import { delay, channel } from 'redux-saga'
 import fire from '../../fire'
 import constants from '../../constants'
-import { includesNonCase, removeCategory, reduceToList } from '../../utils'
+import { includesNonCase, removeCategory, removeCategoryValue, reduceToList } from '../../utils'
 
 export default kea({
   actions: () => ({
@@ -99,14 +99,18 @@ export default kea({
           // friendly keys replacement (i.e. from Product Name: Yes to use useConsent: true)
           const unfriendlyKeys = (rawKey) => ({
             [constants.friendlyFilters.identityProduct]: `${constants.fields.useIdentity}: true`,
-            [constants.friendlyFilters.consentProduct]: `${constants.fields.useIdentity}: true`,
-            [constants.friendlyFilters.profileProduct]: `${constants.fields.useIdentity}: true`
+            [constants.friendlyFilters.consentProduct]: `${constants.fields.useConsent}: true`,
+            [constants.friendlyFilters.profileProduct]: `${constants.fields.useProfile}: true`
           })[rawKey] || rawKey
 
           word = unfriendlyKeys(word)
+          const filterCategory = removeCategoryValue(word)
 
           return obj['Keywords'].some(k => k.toLowerCase().includes(removeCategory(word).toLowerCase())) ||
-            Object.keys(obj).some((key) => !constants.skipAttributes.includes(key) && includesNonCase(obj[key], removeCategory(word)))
+            Object.keys(obj).some((key) =>
+              !constants.skipAttributes.includes(key) &&
+              key === filterCategory &&
+              includesNonCase(obj[key], removeCategory(word)))
         }))
         .sort((a, b) => b.Id - a.Id),
       PropTypes.array
@@ -123,10 +127,11 @@ export default kea({
             [constants.fields.useProfile]: constants.friendlyLabels.profileProduct
           })[rawKey] || rawKey
 
+          const keyVal = `${friendlyKeys(key)}: ${item[key] === true ? 'Yes' : item[key]}`
           return !constants.skipAttributes.includes(key) &&
-          !keysArray.includes(`${key}: ${item[key]}`) &&
+          !keysArray.includes(keyVal) &&
           item[key]
-            ? keysArray.push(`${friendlyKeys(key)}: ${item[key] === true ? 'Yes' : item[key]}`) : null
+            ? keysArray.push(keyVal) : null
         })
 
         keysArray = keysArray.concat(

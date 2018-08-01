@@ -5,6 +5,9 @@ export function includesNonCase (value1, value2) {
 export function removeCategory (keyword) {
   return keyword.substring(keyword.indexOf(':') + 2)
 }
+export function removeCategoryValue (keyword) {
+  return keyword.substring(0, keyword.indexOf(':'))
+}
 
 export function reduceToList (properties, fieldName) {
   return properties.reduce((customers, item) =>
