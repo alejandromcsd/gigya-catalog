@@ -56,7 +56,7 @@ export default class Header extends React.Component {
     if (!currentUser) return null
     return (
       <AppBar
-        title={<span>Gigya Catalog</span>}
+        title={<span>CDC Catalog</span>}
         iconElementLeft={<IconButton><NavigationClose /></IconButton>}
         iconElementRight={
           <div>

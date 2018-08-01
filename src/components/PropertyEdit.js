@@ -3,6 +3,7 @@ import { connect } from 'kea'
 import Dialog from 'material-ui/Dialog'
 import TextField from 'material-ui/TextField'
 import AutoComplete from 'material-ui/AutoComplete'
+import Checkbox from 'material-ui/Checkbox'
 import DatePicker from 'material-ui/DatePicker'
 import RaisedButton from 'material-ui/FlatButton'
 import SelectField from 'material-ui/SelectField'
@@ -11,6 +12,7 @@ import LinearProgress from 'material-ui/LinearProgress'
 import propertyLogic from './logic/property.logic'
 import {orange500, blue500} from 'material-ui/styles/colors'
 import PropertyCapture from './PropertyCapture'
+import constants from '../constants'
 
 const styles = {
   errorStyle: {
@@ -36,6 +38,13 @@ const styles = {
   autoCompleteList: {
     maxHeight: 200,
     overflow: 'auto'
+  },
+  checkbox: {
+    marginBottom: 16
+  },
+  label: {
+    color: '#FF9800',
+    lineHeight: 4
   }
 }
 
@@ -69,6 +78,9 @@ export default class PropertyEdit extends React.Component {
   constructor () {
     super()
     this.state = {
+      useIdentity: false,
+      useConsent: false,
+      useProfile: false,
       implementation: '',
       url: '',
       customer: '',
@@ -79,6 +91,14 @@ export default class PropertyEdit extends React.Component {
       country: '',
       platform: '',
       category: '',
+      tddUrl: '',
+      apiKey: '',
+      customFlows: '',
+      cms: '',
+      serverSession: '',
+      centralizedLoginSSO: '',
+      frontEndLibraries: '',
+      overridingNativeBrowser: '',
       description: '',
       keywords: [],
       otherKeywords: '',
@@ -94,6 +114,9 @@ export default class PropertyEdit extends React.Component {
   componentWillReceiveProps ({ propertyOnEdit }) {
     if (propertyOnEdit && JSON.stringify(propertyOnEdit) !== JSON.stringify(this.props.propertyOnEdit)) {
       this.setState({
+        useIdentity: propertyOnEdit[constants.fields.useIdentity] || false,
+        useConsent: propertyOnEdit[constants.fields.useConsent] || false,
+        useProfile: propertyOnEdit[constants.fields.useProfile] || false,
         implementation: propertyOnEdit['Implementation'],
         url: propertyOnEdit['Url'],
         customer: propertyOnEdit['Customer'],
@@ -104,12 +127,24 @@ export default class PropertyEdit extends React.Component {
         country: propertyOnEdit['Country'],
         platform: propertyOnEdit['Platform'],
         category: propertyOnEdit['Category'],
-        description: propertyOnEdit['Description'] ? propertyOnEdit['Description'].replace(/<br\s*[/]?>/gi, '\n') : '',
+        tddUrl: propertyOnEdit[constants.fields.tdd],
+        apiKey: propertyOnEdit[constants.fields.apiKey],
+        customFlows: this.renderTextbox(propertyOnEdit[constants.fields.customFlows]),
+        cms: this.renderTextbox(propertyOnEdit[constants.fields.cms]),
+        serverSession: this.renderTextbox(propertyOnEdit[constants.fields.serverSession]),
+        centralizedLoginSSO: this.renderTextbox(propertyOnEdit[constants.fields.centralizedLogin]),
+        frontEndLibraries: this.renderTextbox(propertyOnEdit[constants.fields.frontEnd]),
+        overridingNativeBrowser: this.renderTextbox(propertyOnEdit[constants.fields.overriding]),
+        description: this.renderTextbox(propertyOnEdit[constants.fields.description]),
         keywords: propertyOnEdit['Keywords'],
         otherKeywords: ''
       })
     }
   }
+
+  renderTextbox = (val) => val ? val.replace(/<br\s*[/]?>/gi, '\n') : '';
+
+  encodeTextbox = (val) => val.replace(/(?:\r\n|\r|\n)/g, '<br />');
 
   handleClose = () => this.actions.setPropertyOnEdit(null)
 
@@ -125,6 +160,9 @@ export default class PropertyEdit extends React.Component {
   handleSubmit = () => {
     const {
       customer,
+      useIdentity,
+      useConsent,
+      useProfile,
       implementation,
       url,
       goLiveDate,
@@ -134,6 +172,14 @@ export default class PropertyEdit extends React.Component {
       country,
       platform,
       category,
+      tddUrl,
+      apiKey,
+      customFlows,
+      cms,
+      serverSession,
+      centralizedLoginSSO,
+      frontEndLibraries,
+      overridingNativeBrowser,
       description,
       keywords,
       otherKeywords
@@ -152,6 +198,9 @@ export default class PropertyEdit extends React.Component {
 
     this.actions.submitPropertyEdit({
       'Id': this.props.propertyOnEdit['Id'] || this.props.nextId,
+      [constants.fields.useIdentity]: useIdentity || false,
+      [constants.fields.useConsent]: useConsent || false,
+      [constants.fields.useProfile]: useProfile || false,
       'Implementation': implementation,
       'Url': url,
       'Customer': customer,
@@ -163,7 +212,15 @@ export default class PropertyEdit extends React.Component {
       'Country': country,
       'Platform': platform,
       'Category': category,
-      'Description': description.replace(/(?:\r\n|\r|\n)/g, '<br />'),
+      [constants.fields.tdd]: tddUrl || '',
+      [constants.fields.apiKey]: apiKey || '',
+      [constants.fields.customFlows]: this.encodeTextbox(customFlows),
+      [constants.fields.cms]: this.encodeTextbox(cms),
+      [constants.fields.serverSession]: this.encodeTextbox(serverSession),
+      [constants.fields.centralizedLogin]: this.encodeTextbox(centralizedLoginSSO),
+      [constants.fields.frontEnd]: this.encodeTextbox(frontEndLibraries),
+      [constants.fields.overriding]: this.encodeTextbox(overridingNativeBrowser),
+      [constants.fields.description]: this.encodeTextbox(description),
       'Keywords': [
         ...keywords,
         ...(otherKeywords.length ? otherKeywords.split(',').map(v => v.trim()) : [])
@@ -195,6 +252,9 @@ export default class PropertyEdit extends React.Component {
 
     const {
       customer,
+      useIdentity,
+      useConsent,
+      useProfile,
       implementation,
       url,
       goLiveDate,
@@ -204,6 +264,14 @@ export default class PropertyEdit extends React.Component {
       country,
       platform,
       category,
+      tddUrl,
+      apiKey,
+      customFlows,
+      cms,
+      serverSession,
+      centralizedLoginSSO,
+      frontEndLibraries,
+      overridingNativeBrowser,
       description,
       keywords,
       otherKeywords
@@ -256,6 +324,24 @@ export default class PropertyEdit extends React.Component {
           )}
           {this.state.errors.imageError && <span style={{color: '#ff0000'}}>{this.state.errors.imageError}</span>}
 
+          <label style={styles.label}>{constants.labels.productsLabel}</label>
+          <Checkbox
+            label='Identity'
+            checked={useIdentity}
+            onCheck={e => this.setState({ useIdentity: !this.state.useIdentity })}
+            style={styles.checkbox}
+          />
+          <Checkbox
+            label='Consent'
+            checked={useConsent}
+            onCheck={e => this.setState({ useConsent: !this.state.useConsent })}
+            style={styles.checkbox}
+          />
+          <Checkbox
+            label='Profile'
+            checked={useProfile}
+            onCheck={e => this.setState({ useProfile: !this.state.useProfile })}
+          />
           <TextField
             floatingLabelText='Implementation Name'
             value={implementation}
@@ -292,7 +378,7 @@ export default class PropertyEdit extends React.Component {
             floatingLabelStyle={styles.floatingLabelStyle}
             floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
             errorText={this.state.errors.customerError}
-            onNewRequest={() => this.autoCompleteCustomer.focus()}
+            onNewRequest={() => this.datePickerGoLive.focus()}
             ref={(input) => { this.autoCompleteCustomer = input }}
             openOnFocus
             fullWidth
@@ -303,9 +389,10 @@ export default class PropertyEdit extends React.Component {
             value={goLiveDate}
             onChange={(_, goLiveDate) => this.setState({ goLiveDate })}
             mode='landscape'
-            container='inline'
+            okLabel='Set Go Live date'
             floatingLabelStyle={styles.floatingLabelStyle}
             floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
+            ref={(input) => { this.datePickerGoLive = input }}
             fullWidth
           />
           <AutoComplete
@@ -318,7 +405,7 @@ export default class PropertyEdit extends React.Component {
             onUpdateInput={am => this.setState({ am })}
             floatingLabelStyle={styles.floatingLabelStyle}
             floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
-            onNewRequest={() => this.autoCompleteAM.focus()}
+            onNewRequest={() => this.autoCompleteIC.focus()}
             ref={(input) => { this.autoCompleteAM = input }}
             openOnFocus
             fullWidth
@@ -333,7 +420,7 @@ export default class PropertyEdit extends React.Component {
             onUpdateInput={ic => this.setState({ ic })}
             floatingLabelStyle={styles.floatingLabelStyle}
             floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
-            onNewRequest={() => this.autoCompleteIC.focus()}
+            onNewRequest={() => this.autoCompleteTC.focus()}
             ref={(input) => { this.autoCompleteIC = input }}
             openOnFocus
             fullWidth
@@ -348,7 +435,7 @@ export default class PropertyEdit extends React.Component {
             onUpdateInput={tc => this.setState({ tc })}
             floatingLabelStyle={styles.floatingLabelStyle}
             floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
-            onNewRequest={() => this.autoCompleteTC.focus()}
+            onNewRequest={() => this.autoCompleteCountry.focus()}
             ref={(input) => { this.autoCompleteTC = input }}
             openOnFocus
             fullWidth
@@ -363,7 +450,7 @@ export default class PropertyEdit extends React.Component {
             onUpdateInput={country => this.setState({ country })}
             floatingLabelStyle={styles.floatingLabelStyle}
             floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
-            onNewRequest={() => this.autoCompleteCountry.focus()}
+            onNewRequest={() => this.autoCompletePlatform.focus()}
             ref={(input) => { this.autoCompleteCountry = input }}
             openOnFocus
             fullWidth
@@ -378,7 +465,7 @@ export default class PropertyEdit extends React.Component {
             onUpdateInput={platform => this.setState({ platform })}
             floatingLabelStyle={styles.floatingLabelStyle}
             floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
-            onNewRequest={() => this.autoCompletePlatform.focus()}
+            onNewRequest={() => this.autoCompleteCategory.focus()}
             ref={(input) => { this.autoCompletePlatform = input }}
             openOnFocus
             fullWidth
@@ -393,13 +480,90 @@ export default class PropertyEdit extends React.Component {
             onUpdateInput={category => this.setState({ category })}
             floatingLabelStyle={styles.floatingLabelStyle}
             floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
-            onNewRequest={() => this.autoCompleteCategory.focus()}
+            onNewRequest={() => this.inputTDD.focus()}
             ref={(input) => { this.autoCompleteCategory = input }}
             openOnFocus
             fullWidth
           />
           <TextField
-            floatingLabelText='Description'
+            floatingLabelText={constants.labels.tddLabel}
+            value={tddUrl}
+            onChange={e => this.setState({ tddUrl: e.target.value })}
+            floatingLabelStyle={styles.floatingLabelStyle}
+            floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
+            ref={(input) => { this.inputTDD = input }}
+            fullWidth
+          />
+          <TextField
+            floatingLabelText={constants.labels.apiKeyLabel}
+            value={apiKey}
+            onChange={e => this.setState({ apiKey: e.target.value })}
+            floatingLabelStyle={styles.floatingLabelStyle}
+            floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
+            fullWidth
+          />
+          <TextField
+            floatingLabelText={constants.labels.customFlowsLabel}
+            value={customFlows}
+            onChange={e => this.setState({ customFlows: e.target.value })}
+            floatingLabelStyle={styles.floatingLabelStyle}
+            floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
+            multiLine
+            rows={2}
+            fullWidth
+          />
+          <TextField
+            floatingLabelText={constants.labels.cmsLabel}
+            value={cms}
+            onChange={e => this.setState({ cms: e.target.value })}
+            floatingLabelStyle={styles.floatingLabelStyle}
+            floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
+            multiLine
+            rows={2}
+            fullWidth
+          />
+          <TextField
+            floatingLabelText={constants.labels.serverSessionLabel}
+            value={serverSession}
+            onChange={e => this.setState({ serverSession: e.target.value })}
+            floatingLabelStyle={styles.floatingLabelStyle}
+            floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
+            multiLine
+            rows={2}
+            fullWidth
+          />
+          <TextField
+            floatingLabelText={constants.labels.centralizedLoginLabel}
+            value={centralizedLoginSSO}
+            onChange={e => this.setState({ centralizedLoginSSO: e.target.value })}
+            floatingLabelStyle={styles.floatingLabelStyle}
+            floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
+            multiLine
+            rows={2}
+            fullWidth
+          />
+          <TextField
+            floatingLabelText={constants.labels.frontEndLabel}
+            value={frontEndLibraries}
+            onChange={e => this.setState({ frontEndLibraries: e.target.value })}
+            floatingLabelStyle={styles.floatingLabelStyle}
+            floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
+            multiLine
+            rows={2}
+            fullWidth
+          />
+          <TextField
+            floatingLabelText={constants.labels.overridingLabel}
+            value={overridingNativeBrowser}
+            onChange={e => this.setState({ overridingNativeBrowser: e.target.value })}
+            floatingLabelStyle={styles.floatingLabelStyle}
+            floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
+            multiLine
+            rows={2}
+            fullWidth
+          />
+          <TextField
+            floatingLabelText={constants.labels.descriptionLabel}
             value={description}
             onChange={e => this.setState({ description: e.target.value })}
             floatingLabelStyle={styles.floatingLabelStyle}

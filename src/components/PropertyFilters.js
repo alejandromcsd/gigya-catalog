@@ -6,7 +6,6 @@ import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar'
 import RaisedButton from 'material-ui/FlatButton'
 import PhoneIcon from 'material-ui/svg-icons/hardware/phone-iphone'
 import RetailIcon from 'material-ui/svg-icons/action/done-all'
-import AirlineIcon from 'material-ui/svg-icons/device/airplanemode-active'
 import MailIcon from 'material-ui/svg-icons/communication/contact-mail'
 import GroupIcon from 'material-ui/svg-icons/action/group-work'
 import propertyLogic from './logic/property.logic'
@@ -99,13 +98,7 @@ export class PropertyFilters extends React.Component {
               style={styles.button}
               label='Consent'
               icon={<RetailIcon />}
-              onClick={() => this.actions.addFilter('Keyword: Consent')}
-            />
-            <RaisedButton
-              style={styles.button}
-              label='Travel'
-              icon={<AirlineIcon />}
-              onClick={() => this.actions.addFilter('Category: Travel')}
+              onClick={() => this.actions.addFilter('SAP Customer Consent: Yes')}
             />
             <RaisedButton
               style={styles.button}

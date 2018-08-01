@@ -2,12 +2,16 @@ import React from 'react'
 import { connect } from 'kea'
 import Dialog from 'material-ui/Dialog'
 import Chip from 'material-ui/Chip'
+import Avatar from 'material-ui/Avatar'
+import List from 'material-ui/List/List'
+import ListItem from 'material-ui/List/ListItem'
 import RaisedButton from 'material-ui/RaisedButton'
 import {Card, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card'
 import LanguageIcon from 'material-ui/svg-icons/action/language'
 import ModeEdit from 'material-ui/svg-icons/editor/mode-edit'
 import propertyLogic from './logic/property.logic'
 import {toHTML} from '../utils'
+import constants from '../constants'
 
 const styles = {
   button: {
@@ -28,6 +32,15 @@ const styles = {
   },
   image: {
     minHeight: 300
+  },
+  avatarContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    padding: 0
+  },
+  avatar: {
+    backgroundColor: '#FFB407',
+    color: '#000000'
   }
 }
 
@@ -125,7 +138,126 @@ export default class PropertyDetails extends React.Component {
               <div style={styles.wrapper}>
                 {selectedProperty['Keywords'].map(this.renderChip, this)}
               </div>
-              <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty['Description'])}} />
+
+              {(selectedProperty[constants.fields.useIdentity] ||
+                selectedProperty[constants.fields.useConsent] ||
+                selectedProperty[constants.fields.useProfile]) &&
+                <div>
+                  <h3>{constants.labels.productsLabel}</h3>
+                  <List style={styles.avatarContainer}>
+                    {selectedProperty[constants.fields.useIdentity] &&
+                    <ListItem
+                      disabled
+                      leftAvatar={
+                        <Avatar
+                          color={styles.avatar.color}
+                          size={30}
+                          backgroundColor={styles.avatar.backgroundColor}
+                        >
+                        I
+                        </Avatar>
+                      }
+                    >
+                    Identity
+                    </ListItem>
+                    }
+                    {selectedProperty[constants.fields.useConsent] &&
+                    <ListItem
+                      disabled
+                      leftAvatar={
+                        <Avatar
+                          color={styles.avatar.color}
+                          size={30}
+                          backgroundColor={styles.avatar.backgroundColor}
+                        >
+                        C
+                        </Avatar>
+                      }
+                    >
+                    Consent
+                    </ListItem>
+                    }
+                    {selectedProperty[constants.fields.useProfile] &&
+                    <ListItem
+                      disabled
+                      leftAvatar={
+                        <Avatar
+                          color={styles.avatar.color}
+                          size={30}
+                          backgroundColor={styles.avatar.backgroundColor}
+                        >
+                        P
+                        </Avatar>
+                      }
+                    >
+                    Profile
+                    </ListItem>
+                    }
+                  </List>
+                </div>
+              }
+              {selectedProperty[constants.fields.tdd] &&
+              <div>
+                <h3>{constants.labels.tddLabel}</h3>
+                <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.tdd])}} />
+              </div>
+              }
+
+              {selectedProperty[constants.fields.apiKey] &&
+              <div>
+                <h3>{constants.labels.apiKeyLabel}</h3>
+                <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.apiKey])}} />
+              </div>
+              }
+
+              {selectedProperty[constants.fields.customFlows] &&
+              <div>
+                <h3>{constants.labels.customFlowsLabel}</h3>
+                <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.customFlows])}} />
+              </div>
+              }
+
+              {selectedProperty[constants.fields.cms] &&
+              <div>
+                <h3>{constants.labels.cmsLabel}</h3>
+                <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.cms])}} />
+              </div>
+              }
+
+              {selectedProperty[constants.fields.serverSession] &&
+              <div>
+                <h3>{constants.labels.serverSessionLabel}</h3>
+                <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.serverSession])}} />
+              </div>
+              }
+
+              {selectedProperty[constants.fields.centralizedLogin] &&
+              <div>
+                <h3>{constants.labels.centralizedLoginLabel}</h3>
+                <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.centralizedLogin])}} />
+              </div>
+              }
+
+              {selectedProperty[constants.fields.frontEnd] &&
+              <div>
+                <h3>{constants.labels.frontEndLabel}</h3>
+                <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.frontEnd])}} />
+              </div>
+              }
+
+              {selectedProperty[constants.fields.overriding] &&
+              <div>
+                <h3>{constants.labels.overridingLabel}</h3>
+                <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.overriding])}} />
+              </div>
+              }
+
+              {selectedProperty[constants.fields.description] &&
+              <div>
+                <h3>{constants.labels.descriptionLabel}</h3>
+                <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.description])}} />
+              </div>
+              }
             </CardText>
           </Card>
 

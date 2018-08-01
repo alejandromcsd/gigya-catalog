@@ -23,7 +23,9 @@ export default kea({
     toggleDialog: () => ({}),
     selectProperty: (property) => ({ property }),
     uploadImage: (image) => ({ image }),
-    setUploadedImageUrl: (imageUrl) => ({ imageUrl })
+    setUploadedImageUrl: (imageUrl) => ({ imageUrl }),
+    showMoreItems: () => ({}),
+    showAll: (resultsCount) => ({ resultsCount })
   }),
 
   reducers: ({ actions }) => ({
@@ -79,6 +81,13 @@ export default kea({
       [actions.setUploadedImageUrl]: (_, payload) => payload.imageUrl,
       [actions.uploadImage]: () => '',
       [actions.setPropertyOnEdit]: () => ''
+    }],
+    scrollCount: [12, PropTypes.number, {
+      [actions.showMoreItems]: (state) => state + 20,
+      [actions.showAll]: (_, payload) => payload.resultsCount + 1,
+      [actions.fetchProperties]: () => 12,
+      [actions.addFilter]: () => 12,
+      [actions.removeFilter]: () => 12
     }]
   }),
 
@@ -86,9 +95,19 @@ export default kea({
     searchResults: [
       () => [selectors.properties, selectors.filters],
       (properties, filters) => !filters ? properties : properties
-        .filter(obj => filters.every(word =>
-          obj['Keywords'].some(k => k.toLowerCase().includes(removeCategory(word).toLowerCase())) ||
-          Object.keys(obj).some((key) => !constants.skipAttributes.includes(key) && includesNonCase(obj[key], removeCategory(word)))))
+        .filter(obj => filters.every(word => {
+          // friendly keys replacement (i.e. from Product Name: Yes to use useConsent: true)
+          const unfriendlyKeys = (rawKey) => ({
+            [constants.friendlyFilters.identityProduct]: `${constants.fields.useIdentity}: true`,
+            [constants.friendlyFilters.consentProduct]: `${constants.fields.useIdentity}: true`,
+            [constants.friendlyFilters.profileProduct]: `${constants.fields.useIdentity}: true`
+          })[rawKey] || rawKey
+
+          word = unfriendlyKeys(word)
+
+          return obj['Keywords'].some(k => k.toLowerCase().includes(removeCategory(word).toLowerCase())) ||
+            Object.keys(obj).some((key) => !constants.skipAttributes.includes(key) && includesNonCase(obj[key], removeCategory(word)))
+        }))
         .sort((a, b) => b.Id - a.Id),
       PropTypes.array
     ],
@@ -96,10 +115,20 @@ export default kea({
       () => [selectors.properties],
       (properties) => properties.reduce((keysArray, item) => {
         // on each property, push all simple attributes and keywords
-        Object.keys(item).map((key) =>
-          !constants.skipAttributes.includes(key) && !keysArray.includes(`${key}: ${item[key]}`)
-            ? keysArray.push(`${key}: ${item[key]}`)
-            : null)
+        Object.keys(item).map((key) => {
+          // friendly keys replacement (i.e. from use useConsent: true to Product Name: Yes)
+          const friendlyKeys = (rawKey) => ({
+            [constants.fields.useIdentity]: constants.friendlyLabels.identityProduct,
+            [constants.fields.useConsent]: constants.friendlyLabels.consentProduct,
+            [constants.fields.useProfile]: constants.friendlyLabels.profileProduct
+          })[rawKey] || rawKey
+
+          return !constants.skipAttributes.includes(key) &&
+          !keysArray.includes(`${key}: ${item[key]}`) &&
+          item[key]
+            ? keysArray.push(`${friendlyKeys(key)}: ${item[key] === true ? 'Yes' : item[key]}`) : null
+        })
+
         keysArray = keysArray.concat(
           item.Keywords.filter(keyword => !keysArray.includes(`Keyword: ${keyword}`)).map(k => `Keyword: ${k}`)
         )

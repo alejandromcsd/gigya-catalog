@@ -24,6 +24,7 @@ const styles = {
     margin: 10
   },
   media: {
+    height: 160,
     maxHeight: 160,
     overflowY: 'hidden'
   }
@@ -35,7 +36,8 @@ const styles = {
       'properties',
       'isLoading',
       'searchResults',
-      'error'
+      'error',
+      'scrollCount'
     ]
   ],
   actions: [
@@ -59,7 +61,7 @@ export class PropertyGrid extends React.Component {
   }
 
   render () {
-    const { searchResults, isLoading, error } = this.props
+    const { searchResults, isLoading, error, scrollCount } = this.props
     const { selectProperty } = this.actions
 
     return (
@@ -76,7 +78,7 @@ export class PropertyGrid extends React.Component {
               style={styles.gridList}
               cols={this.getCols(searchResults.length)}
             >
-              {searchResults.map((tile) => (
+              {searchResults.slice(0, scrollCount).map((tile) => (
                 <Card
                   key={tile['Id']}
                   style={styles.tile}

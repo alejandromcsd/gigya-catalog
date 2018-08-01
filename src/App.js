@@ -9,6 +9,7 @@ import PropertyFilters from './components/PropertyFilters'
 import PropertyDetails from './components/PropertyDetails'
 import Login from './components/Login'
 import PropertyEdit from './components/PropertyEdit'
+import LoadMore from './components/LoadMore'
 
 const muiTheme = getMuiTheme({
   palette: {
@@ -16,18 +17,6 @@ const muiTheme = getMuiTheme({
     primary3Color: '#FFB407',
     accent1Color: '#FFB407',
     accent3Color: '#FFB407'
-    // primary3Color: grey400,
-    // accent1Color: pinkA200,
-    // accent2Color: grey100,
-    // accent3Color: grey500,
-    // textColor: darkBlack,
-    // alternateTextColor: white,
-    // canvasColor: white,
-    // borderColor: grey300,
-    // disabledColor: fade(darkBlack, 0.3),
-    // pickerHeaderColor: cyan500,
-    // clockCircleColor: fade(darkBlack, 0.07),
-    // shadowColor: fullBlack
   },
   chip: {
     backgroundColor: '#FFB407',
@@ -48,6 +37,7 @@ class App extends Component {
           <PropertyDetails />
           <Login />
           <PropertyEdit />
+          <LoadMore />
         </div>
       </MuiThemeProvider>
     )
