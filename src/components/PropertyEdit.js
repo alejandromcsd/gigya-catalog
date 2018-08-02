@@ -322,7 +322,7 @@ export default class PropertyEdit extends React.Component {
               <br />
             </div>
           )}
-          {this.state.errors.imageError && <span style={{color: '#ff0000'}}>{this.state.errors.imageError}</span>}
+          {this.state.errors.imageError && <p><span style={{color: '#ff0000'}}>{this.state.errors.imageError}</span></p>}
 
           <label style={styles.label}>{constants.labels.productsLabel}</label>
           <Checkbox
