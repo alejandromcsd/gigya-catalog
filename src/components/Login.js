@@ -60,14 +60,6 @@ export default class Login extends React.Component {
           open={!currentUser}
         >
           <div id='gigya-container-login' />
-          {/* <Tabs>
-            <Tab label='Login' value='a'>
-              <div id='gigya-container-login' />
-            </Tab>
-            <Tab label='Lite Registration' value='l'>
-              <div id='gigya-container-lite' />
-            </Tab>
-          </Tabs> */}
         </Dialog>
       </div>
     )
