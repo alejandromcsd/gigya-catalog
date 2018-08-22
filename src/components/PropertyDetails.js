@@ -196,6 +196,15 @@ export default class PropertyDetails extends React.Component {
                   </List>
                 </div>
               }
+
+              <div>
+                <h3>{constants.labels.referenceLabel}</h3>
+                <div>{selectedProperty[constants.fields.useAsReference]
+                  ? 'Yes, customer has authorised to use this implementation as a reference with externals'
+                  : 'No, customer has not authorised yet to use this implementation as a reference with externals'
+                }</div>
+              </div>
+
               {selectedProperty[constants.fields.tdd] &&
               <div>
                 <h3>{constants.labels.tddLabel}</h3>

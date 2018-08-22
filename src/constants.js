@@ -13,7 +13,8 @@ const constants = {
     'ServerSession',
     'CentralizedLoginSSO',
     'FrontEndLibraries',
-    'OverridingNativeBrowser'
+    'OverridingNativeBrowser',
+    'useAsReference'
   ],
   labels: {
     tddLabel: 'TDD URL',
@@ -25,12 +26,14 @@ const constants = {
     frontEndLabel: 'Front end libraries? (React, Angular, Vue, other)',
     overridingLabel: 'Overriding native browser methods?',
     descriptionLabel: 'Additional details (Purpose, IdentitySync, Webhooks)',
-    productsLabel: 'Customer Data Cloud Products'
+    productsLabel: 'Customer Data Cloud Products',
+    referenceLabel: 'Customer authorised to use this implementation as a reference?'
   },
   fields: {
     useIdentity: 'UseIdentity',
     useConsent: 'UseConsent',
     useProfile: 'UseProfile',
+    useAsReference: 'UseAsReference',
     tdd: 'TDDUrl',
     apiKey: 'APIKey',
     customFlows: 'CustomFlows',

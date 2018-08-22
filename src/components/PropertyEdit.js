@@ -81,6 +81,7 @@ export default class PropertyEdit extends React.Component {
       useIdentity: false,
       useConsent: false,
       useProfile: false,
+      useAsReference: false,
       implementation: '',
       url: '',
       customer: '',
@@ -117,6 +118,7 @@ export default class PropertyEdit extends React.Component {
         useIdentity: propertyOnEdit[constants.fields.useIdentity] || false,
         useConsent: propertyOnEdit[constants.fields.useConsent] || false,
         useProfile: propertyOnEdit[constants.fields.useProfile] || false,
+        useAsReference: propertyOnEdit[constants.fields.useAsReference] || false,
         implementation: propertyOnEdit['Implementation'],
         url: propertyOnEdit['Url'],
         customer: propertyOnEdit['Customer'],
@@ -163,6 +165,7 @@ export default class PropertyEdit extends React.Component {
       useIdentity,
       useConsent,
       useProfile,
+      useAsReference,
       implementation,
       url,
       goLiveDate,
@@ -201,6 +204,7 @@ export default class PropertyEdit extends React.Component {
       [constants.fields.useIdentity]: useIdentity || false,
       [constants.fields.useConsent]: useConsent || false,
       [constants.fields.useProfile]: useProfile || false,
+      [constants.fields.useAsReference]: useAsReference || false,
       'Implementation': implementation,
       'Url': url,
       'Customer': customer,
@@ -255,6 +259,7 @@ export default class PropertyEdit extends React.Component {
       useIdentity,
       useConsent,
       useProfile,
+      useAsReference,
       implementation,
       url,
       goLiveDate,
@@ -341,6 +346,12 @@ export default class PropertyEdit extends React.Component {
             label='Profile'
             checked={useProfile}
             onCheck={e => this.setState({ useProfile: !this.state.useProfile })}
+          />
+          <label style={styles.label}>{constants.labels.referenceLabel}</label>
+          <Checkbox
+            label='Only tick if you have received customer consent to use as reference material'
+            checked={useAsReference}
+            onCheck={e => this.setState({ useAsReference: !this.state.useAsReference })}
           />
           <TextField
             floatingLabelText='Implementation Name'
