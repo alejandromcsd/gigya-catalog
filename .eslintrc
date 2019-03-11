@@ -1,7 +1,9 @@
 {
-	"ecmaFeatures": {
-	  "jsx": true,
-	  "modules": true
+	"parserOptions": {
+		"ecmaFeatures": {
+				"jsx": true,
+				"modules": true
+		}
 	},
 	"plugins": [
 	  "react"
@@ -15,4 +17,4 @@
 	},
 	"extends": ["standard", "standard-react"],
 	"parser": "babel-eslint"
-  }
+}
