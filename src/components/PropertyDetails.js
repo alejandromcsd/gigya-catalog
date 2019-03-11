@@ -1,19 +1,26 @@
 import React from 'react'
 import { connect } from 'kea'
+import { withRouter } from 'react-router-dom'
 import Dialog from 'material-ui/Dialog'
 import Chip from 'material-ui/Chip'
 import Avatar from 'material-ui/Avatar'
 import List from 'material-ui/List/List'
+import Snackbar from 'material-ui/Snackbar'
 import ListItem from 'material-ui/List/ListItem'
+import Divider from 'material-ui/Divider'
 import RaisedButton from 'material-ui/RaisedButton'
 import {Card, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card'
 import LanguageIcon from 'material-ui/svg-icons/action/language'
+import ShareIcon from 'material-ui/svg-icons/social/share'
 import ModeEdit from 'material-ui/svg-icons/editor/mode-edit'
 import propertyLogic from './logic/property.logic'
-import {toHTML} from '../utils'
+import {toHTML, copyURLToClipboard} from '../utils'
 import constants from '../constants'
 
 const styles = {
+  chipLabelStyle: {
+    color: 'white'
+  },
   button: {
     margin: 10,
     float: 'right'
@@ -27,7 +34,7 @@ const styles = {
     marginBottom: 20
   },
   dialogTitle: {
-    backgroundColor: 'black',
+    backgroundColor: '#354A5F',
     color: 'white'
   },
   image: {
@@ -39,8 +46,12 @@ const styles = {
     padding: 0
   },
   avatar: {
-    backgroundColor: '#FFB407',
-    color: '#000000'
+    backgroundColor: '#0070b1',
+    color: 'white'
+  },
+  detailsSection: {
+    paddingTop: '30px',
+    paddingBottom: '10px'
   }
 }
 
@@ -58,17 +69,38 @@ const styles = {
     ]
   ]
 })
-export default class PropertyDetails extends React.Component {
+export class PropertyDetails extends React.Component {
+  constructor () {
+    super()
+    this.state = {
+      copyUrlOpen: false
+    }
+  }
+
+  handleCopyRequestClose = () => {
+    this.setState({
+      copyUrlOpen: false
+    })
+  }
+
+  copyURL = () => {
+    copyURLToClipboard()
+    this.setState({
+      copyUrlOpen: true
+    })
+  }
+
   renderChip = (data) => {
     return (
       <Chip
         key={data}
         style={styles.chip}
+        labelColor={styles.chipLabelStyle.color}
       >
         {data}
       </Chip>
     )
-  };
+  }
 
   renderMedia = (selectedProperty) => (
     <div>
@@ -87,15 +119,27 @@ export default class PropertyDetails extends React.Component {
         icon={<LanguageIcon />}
         href={selectedProperty['Url']}
         target='_blank'
-        // onClick={() => window.open(selectedProperty['Url'], '_blank')}
+        style={styles.button}
+      />
+      <RaisedButton
+        label='Share'
+        labelPosition='before'
+        primary
+        icon={<ShareIcon />}
+        onClick={this.copyURL}
+        target='_blank'
         style={styles.button}
       />
     </div>
   )
 
+  toggleDetails = () => {
+    this.props.history.push('/')
+    this.actions.toggleDialog()
+  }
+
   render () {
     const { isOpen, selectedProperty } = this.props
-    const { toggleDialog } = this.actions
 
     const subtitle = `
       AM: ${selectedProperty['AM']} |
@@ -110,14 +154,19 @@ export default class PropertyDetails extends React.Component {
     if (!isOpen) return null
     return (
       <div>
-        <RaisedButton label='Dialog' onClick={toggleDialog} />
+        <Snackbar
+          open={this.state.copyUrlOpen}
+          message='The link has been copied to your Clipboard'
+          autoHideDuration={4000}
+          onRequestClose={this.handleCopyRequestClose}
+        />
         <Dialog
           title='Implementation details'
           modal={false}
           autoScrollBodyContent
           titleStyle={styles.dialogTitle}
           open={isOpen}
-          onRequestClose={toggleDialog}
+          onRequestClose={this.toggleDetails}
         >
           <Card>
             <CardHeader
@@ -197,7 +246,8 @@ export default class PropertyDetails extends React.Component {
                 </div>
               }
 
-              <div>
+              <div style={styles.detailsSection}>
+                <Divider />
                 <h3>{constants.labels.referenceLabel}</h3>
                 <div>{selectedProperty[constants.fields.useAsReference]
                   ? 'Yes, customer has authorised to use this implementation as a reference with externals'
@@ -206,63 +256,72 @@ export default class PropertyDetails extends React.Component {
               </div>
 
               {selectedProperty[constants.fields.tdd] &&
-              <div>
+              <div style={styles.detailsSection}>
+                <Divider />
                 <h3>{constants.labels.tddLabel}</h3>
                 <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.tdd])}} />
               </div>
               }
 
               {selectedProperty[constants.fields.apiKey] &&
-              <div>
+              <div style={styles.detailsSection}>
+                <Divider />
                 <h3>{constants.labels.apiKeyLabel}</h3>
                 <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.apiKey])}} />
               </div>
               }
 
               {selectedProperty[constants.fields.customFlows] &&
-              <div>
+              <div style={styles.detailsSection}>
+                <Divider />
                 <h3>{constants.labels.customFlowsLabel}</h3>
                 <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.customFlows])}} />
               </div>
               }
 
               {selectedProperty[constants.fields.cms] &&
-              <div>
+              <div style={styles.detailsSection}>
+                <Divider />
                 <h3>{constants.labels.cmsLabel}</h3>
                 <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.cms])}} />
               </div>
               }
 
               {selectedProperty[constants.fields.serverSession] &&
-              <div>
+              <div style={styles.detailsSection}>
+                <Divider />
                 <h3>{constants.labels.serverSessionLabel}</h3>
                 <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.serverSession])}} />
               </div>
               }
 
               {selectedProperty[constants.fields.centralizedLogin] &&
-              <div>
+              <div style={styles.detailsSection}>
+                <Divider />
                 <h3>{constants.labels.centralizedLoginLabel}</h3>
                 <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.centralizedLogin])}} />
               </div>
               }
 
               {selectedProperty[constants.fields.frontEnd] &&
-              <div>
+              <div style={styles.detailsSection}>
+                <Divider />
                 <h3>{constants.labels.frontEndLabel}</h3>
                 <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.frontEnd])}} />
               </div>
               }
 
               {selectedProperty[constants.fields.overriding] &&
-              <div>
+              <div style={styles.detailsSection}>
+                <Divider />
                 <h3>{constants.labels.overridingLabel}</h3>
                 <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.overriding])}} />
               </div>
               }
 
               {selectedProperty[constants.fields.description] &&
-              <div>
+              <div style={styles.detailsSection}>
+                <Divider />
                 <h3>{constants.labels.descriptionLabel}</h3>
                 <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.description])}} />
               </div>
@@ -275,3 +334,5 @@ export default class PropertyDetails extends React.Component {
     )
   }
 }
+
+export default withRouter(PropertyDetails)

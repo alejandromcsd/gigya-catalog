@@ -9,7 +9,7 @@ const styles = {
   dialogTitle: {
     backgroundColor: 'black',
     color: 'white',
-    borderBottom: '3px solid #FFB407'
+    borderBottom: '3px solid #0070b1'
   }
 }
 
@@ -53,7 +53,7 @@ export default class Login extends React.Component {
     return (
       <div>
         <Dialog
-          title='Gigya Catalog'
+          title='CDC Catalog'
           titleStyle={styles.dialogTitle}
           modal
           autoScrollBodyContent

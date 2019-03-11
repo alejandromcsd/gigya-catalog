@@ -73,17 +73,20 @@ export function getAccountInfo (callback) {
                 FirebaseToken: text
               })
             } else {
+              console.log(`${new Date().toTimeString()} - Error requesting Firebase JWT`);
               console.error(text);
               callback(null)
               showLogin()
             }
         }))
         .catch(function(error) {
+          console.log(`${new Date().toTimeString()} - Error requesting Firebase JWT`);
           console.error(error);
           callback(null)
           showLogin()
         })
       } else {
+        console.log(`${new Date().toTimeString()} - Error requesting a Gigya JWT: ${response.errorMessage}`);
         callback(null)
         showLogin()
       }

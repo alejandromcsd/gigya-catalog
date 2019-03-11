@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'kea'
+import { withRouter } from 'react-router-dom'
 import {GridList} from 'material-ui/GridList'
 import FlatButton from 'material-ui/FlatButton'
 import {Card, CardActions, CardHeader, CardMedia} from 'material-ui/Card'
@@ -33,7 +34,6 @@ const styles = {
 @connect({
   props: [
     propertyLogic, [
-      'properties',
       'isLoading',
       'searchResults',
       'error',
@@ -49,9 +49,6 @@ const styles = {
 export class PropertyGrid extends React.Component {
   getCols (resultsCount) {
     // eslint-disable-next-line
-    // debugger;
-
-    // eslint-disable-next-line
     var w = jQuery(window).width()
 
     if (resultsCount > 3 && w >= 1200) return 4
@@ -60,9 +57,12 @@ export class PropertyGrid extends React.Component {
     return 1
   }
 
+  showProperty = (tile) => {
+    this.props.history.push(`/${tile['Id']}`)
+  }
+
   render () {
     const { searchResults, isLoading, error, scrollCount } = this.props
-    const { selectProperty } = this.actions
 
     return (
       <div style={styles.root}>
@@ -82,7 +82,7 @@ export class PropertyGrid extends React.Component {
                 <Card
                   key={tile['Id']}
                   style={styles.tile}
-                  onClick={() => selectProperty(tile)}
+                  onClick={() => this.showProperty(tile)}
                 >
                   <CardHeader
                     title={tile['Customer']}
@@ -93,7 +93,7 @@ export class PropertyGrid extends React.Component {
                     <img src={tile['ImageUrl']} alt={tile['Implementation']} />
                   </CardMedia>
                   <CardActions>
-                    <FlatButton primary label='View' onClick={() => selectProperty(tile)} />
+                    <FlatButton primary label='View' onClick={() => this.showProperty(tile)} />
                   </CardActions>
                 </Card>
               ))}
@@ -109,4 +109,4 @@ export class PropertyGrid extends React.Component {
     )
   }
 }
-export default PropertyGrid
+export default withRouter(PropertyGrid)

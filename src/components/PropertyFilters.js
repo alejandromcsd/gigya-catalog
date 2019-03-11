@@ -8,9 +8,18 @@ import PhoneIcon from 'material-ui/svg-icons/hardware/phone-iphone'
 import RetailIcon from 'material-ui/svg-icons/action/done-all'
 import MailIcon from 'material-ui/svg-icons/communication/contact-mail'
 import GroupIcon from 'material-ui/svg-icons/action/group-work'
+import DropDownMenu from 'material-ui/DropDownMenu'
+import MenuItem from 'material-ui/MenuItem'
 import propertyLogic from './logic/property.logic'
+import constants from '../constants'
 
 const styles = {
+  chipLabelStyle: {
+    color: 'white'
+  },
+  chipDeleteStyle: {
+    fill: 'white'
+  },
   chip: {
     margin: 4
   },
@@ -40,13 +49,16 @@ const styles = {
   actions: [
     propertyLogic, [
       'addFilter',
-      'removeFilter'
+      'removeFilter',
+      'setSortBy'
     ]
   ],
   props: [
     propertyLogic, [
       'keywords',
-      'filters'
+      'filters',
+      'sortBy',
+      'fullScreen'
     ]
   ]
 })
@@ -73,7 +85,9 @@ export class PropertyFilters extends React.Component {
       <Chip
         key={data}
         onRequestDelete={() => this.actions.removeFilter(data)}
-        style={styles}
+        style={styles.chip}
+        labelColor={styles.chipLabelStyle.color}
+        deleteIconStyle={styles.chipDeleteStyle}
       >
         {data}
       </Chip>
@@ -81,8 +95,12 @@ export class PropertyFilters extends React.Component {
   };
 
   render () {
-    const { keywords, filters } = this.props
+    const { keywords, filters, sortBy, fullScreen } = this.props
+    const { setSortBy, addFilter } = this.actions
     const { searchText } = this.state
+
+    if (fullScreen) return null
+
     // eslint-disable-next-line
     const w = jQuery(window).width()
     const filterLabel = w >= 1200
@@ -92,31 +110,38 @@ export class PropertyFilters extends React.Component {
     return (
       <div>
         <Toolbar style={styles.toolbar}>
-          <ToolbarGroup firstChild lastChild>
+          <ToolbarGroup firstChild>
+            <DropDownMenu value={sortBy} onChange={(event, index, value) => setSortBy(value)}>
+              <MenuItem value={constants.fields.id} primaryText='Sort by: Id' />
+              <MenuItem value={constants.fields.goLiveDate} primaryText='Sort by: Go Live' />
+              <MenuItem value={constants.fields.customer} primaryText='Sort by: Customer' />
+            </DropDownMenu>
+          </ToolbarGroup>
+          <ToolbarGroup lastChild>
             <ToolbarTitle style={styles.toolbarTitle} text='Quick filters' />
             <RaisedButton
               style={styles.button}
               label='Consent'
               icon={<RetailIcon />}
-              onClick={() => this.actions.addFilter('SAP Customer Consent: Yes')}
+              onClick={() => addFilter('SAP Customer Consent: Yes')}
             />
             <RaisedButton
               style={styles.button}
               label='Mobile Apps'
               icon={<PhoneIcon />}
-              onClick={() => this.actions.addFilter('Platform: iOS, Android')}
+              onClick={() => addFilter('Platform: iOS, Android')}
             />
             <RaisedButton
               style={styles.button}
               label='Lite Registration'
               icon={<MailIcon />}
-              onClick={() => this.actions.addFilter('Keyword: Lite Registration')}
+              onClick={() => addFilter('Keyword: Lite Registration')}
             />
             <RaisedButton
               style={styles.button}
               label='SSO'
               icon={<GroupIcon />}
-              onClick={() => this.actions.addFilter('Keyword: SSO')}
+              onClick={() => addFilter('Keyword: SSO')}
             />
           </ToolbarGroup>
         </Toolbar>

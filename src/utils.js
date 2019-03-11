@@ -9,6 +9,16 @@ export function removeCategoryValue (keyword) {
   return keyword.substring(0, keyword.indexOf(':'))
 }
 
+export function copyURLToClipboard () {
+  var dummy = document.createElement('input')
+  var text = window.location.href
+  document.body.appendChild(dummy)
+  dummy.value = text
+  dummy.select()
+  document.execCommand('copy')
+  document.body.removeChild(dummy)
+}
+
 export function reduceToList (properties, fieldName) {
   return properties.reduce((customers, item) =>
     customers.includes(item[fieldName])

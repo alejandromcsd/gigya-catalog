@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'kea'
 import AppBar from 'material-ui/AppBar'
 import NavigationClose from 'material-ui/svg-icons/file/folder-shared'
+import Open from 'material-ui/svg-icons/action/aspect-ratio'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import {ToolbarTitle} from 'material-ui/Toolbar'
@@ -16,6 +17,9 @@ const styles = {
   },
   button: {
     color: 'white'
+  },
+  header: {
+    fontSize: 18
   }
 }
 
@@ -27,7 +31,8 @@ const styles = {
   ],
   actions: [
     propertyLogic, [
-      'setPropertyOnEdit'
+      'setPropertyOnEdit',
+      'toggleFullScreen'
     ]
   ]
 })
@@ -52,11 +57,13 @@ export default class Header extends React.Component {
 
   render () {
     const { currentUser } = this.props
+    const { toggleFullScreen } = this.actions
 
     if (!currentUser) return null
     return (
       <AppBar
-        title={<span>CDC Catalog</span>}
+        title={<span>Customer Data Cloud Catalog</span>}
+        titleStyle={styles.header}
         iconElementLeft={<IconButton><NavigationClose /></IconButton>}
         iconElementRight={
           <div>
@@ -70,6 +77,11 @@ export default class Header extends React.Component {
                 <FlatButton style={styles.button} onClick={this.addImplementation} label='ADD NEW IMPLEMENTATION' />
                 }
                 <FlatButton style={styles.button} onClick={logout} label='LOGOUT' />
+
+                <IconButton tooltip='Full screen' onClick={() => toggleFullScreen()}>
+                  <Open color={styles.button.color} />
+                </IconButton>
+
               </div>
             )}
           </div>

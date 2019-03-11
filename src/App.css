@@ -1,6 +1,6 @@
 .gigya-screen-dialog-top {
-  background-color: #1F1F1F!important;
-  border-bottom: 3px solid #FFB407;
+  background-color: #354A5F!important;
+  border-bottom: 3px solid #0070b1;
 }
 
 .gigya-screen-dialog-close {
@@ -8,7 +8,7 @@
 }
 
 .gigya-screen input[type=submit] {
-  background-color: #1F1F1F!important;
+  background-color: #354A5F!important;
 }
 
 /* BEGIN DROPZONE STYLE */

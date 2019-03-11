@@ -10,27 +10,35 @@ import SelectField from 'material-ui/SelectField'
 import MenuItem from 'material-ui/MenuItem'
 import LinearProgress from 'material-ui/LinearProgress'
 import propertyLogic from './logic/property.logic'
-import {orange500, blue500} from 'material-ui/styles/colors'
+import {blue500} from 'material-ui/styles/colors'
 import PropertyCapture from './PropertyCapture'
 import constants from '../constants'
 
 const styles = {
   errorStyle: {
-    color: orange500
+    color: '#354A5F'
   },
   underlineStyle: {
-    borderColor: orange500
+    borderColor: '#354A5F'
   },
   floatingLabelStyle: {
-    color: orange500
+    color: '#354A5F'
+  },
+  label: {
+    color: '#354A5F',
+    lineHeight: 4
   },
   floatingLabelFocusStyle: {
     color: blue500
   },
   button: {
-    backgroundColor: 'black',
+    backgroundColor: '#0070b1',
     color: 'white',
     marginLeft: 10
+  },
+  dialogTitle: {
+    backgroundColor: '#354A5F',
+    color: 'white'
   },
   progress: {
     marginTop: 50
@@ -41,10 +49,6 @@ const styles = {
   },
   checkbox: {
     marginBottom: 16
-  },
-  label: {
-    color: '#FF9800',
-    lineHeight: 4
   }
 }
 
@@ -139,7 +143,13 @@ export default class PropertyEdit extends React.Component {
         overridingNativeBrowser: this.renderTextbox(propertyOnEdit[constants.fields.overriding]),
         description: this.renderTextbox(propertyOnEdit[constants.fields.description]),
         keywords: propertyOnEdit['Keywords'],
-        otherKeywords: ''
+        otherKeywords: '',
+        errors: {
+          implementationError: '',
+          customerError: '',
+          keywordsError: '',
+          imageError: ''
+        }
       })
     }
   }
@@ -147,6 +157,8 @@ export default class PropertyEdit extends React.Component {
   renderTextbox = (val) => val ? val.replace(/<br\s*[/]?>/gi, '\n') : '';
 
   encodeTextbox = (val) => val.replace(/(?:\r\n|\r|\n)/g, '<br />');
+
+  ensureHTTPS = (url) => !url.match(/^[a-zA-Z]+:\/\//) ? `http://${url}` : url
 
   handleClose = () => this.actions.setPropertyOnEdit(null)
 
@@ -206,7 +218,7 @@ export default class PropertyEdit extends React.Component {
       [constants.fields.useProfile]: useProfile || false,
       [constants.fields.useAsReference]: useAsReference || false,
       'Implementation': implementation,
-      'Url': url,
+      'Url': this.ensureHTTPS(url),
       'Customer': customer,
       'ImageUrl': this.props.uploadedImageUrl || this.props.propertyOnEdit.ImageUrl,
       'GoLiveDate': goLiveDate ? goLiveDate.toDateString() : '',
@@ -302,9 +314,10 @@ export default class PropertyEdit extends React.Component {
     return (
       <div>
         <Dialog
-          title='Gigya Catalog'
+          title='Edit Property'
           modal={false}
           actions={actions}
+          titleStyle={styles.dialogTitle}
           autoScrollBodyContent
           open={!!propertyOnEdit}
         >

@@ -30,6 +30,9 @@ const constants = {
     referenceLabel: 'Customer authorised to use this implementation as a reference?'
   },
   fields: {
+    id: 'Id',
+    goLiveDate: 'GoLiveDate',
+    customer: 'Customer',
     useIdentity: 'UseIdentity',
     useConsent: 'UseConsent',
     useProfile: 'UseProfile',

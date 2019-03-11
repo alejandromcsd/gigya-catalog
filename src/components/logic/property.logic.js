@@ -25,7 +25,9 @@ export default kea({
     uploadImage: (image) => ({ image }),
     setUploadedImageUrl: (imageUrl) => ({ imageUrl }),
     showMoreItems: () => ({}),
-    showAll: (resultsCount) => ({ resultsCount })
+    showAll: (resultsCount) => ({ resultsCount }),
+    setSortBy: (sortField) => ({ sortField }),
+    toggleFullScreen: () => ({})
   }),
 
   reducers: ({ actions }) => ({
@@ -88,13 +90,19 @@ export default kea({
       [actions.fetchProperties]: () => 12,
       [actions.addFilter]: () => 12,
       [actions.removeFilter]: () => 12
+    }],
+    sortBy: [constants.fields.id, PropTypes.string, {
+      [actions.setSortBy]: (_, payload) => payload.sortField
+    }],
+    fullScreen: [false, PropTypes.bool, {
+      [actions.toggleFullScreen]: (state) => !state
     }]
   }),
 
   selectors: ({ selectors }) => ({
     searchResults: [
-      () => [selectors.properties, selectors.filters],
-      (properties, filters) => !filters ? properties : properties
+      () => [selectors.properties, selectors.filters, selectors.sortBy],
+      (properties, filters, sortBy) => !filters ? properties : properties
         .filter(obj => filters.every(word => {
           // friendly keys replacement (i.e. from Product Name: Yes to use useConsent: true)
           const unfriendlyKeys = (rawKey) => ({
@@ -112,7 +120,20 @@ export default kea({
               key === filterCategory &&
               includesNonCase(obj[key], removeCategory(word)))
         }))
-        .sort((a, b) => b.Id - a.Id),
+        .sort((a, b) => {
+          switch (sortBy) {
+            case constants.fields.id:
+              return b[sortBy] - a[sortBy]
+            case constants.fields.goLiveDate:
+              return new Date(b[sortBy]) - new Date(a[sortBy])
+            case constants.fields.customer:
+              const titleA = a[sortBy].toLowerCase()
+              const titleB = b[sortBy].toLowerCase()
+              if (titleA < titleB) return -1
+              if (titleA > titleB) return 1
+              return 0
+          }
+        }),
       PropTypes.array
     ],
     keywords: [
@@ -187,7 +208,10 @@ export default kea({
       const { user } = action.payload
 
       if (!user || !user.FirebaseToken) return
-      yield fire.auth().signInWithCustomToken(user.FirebaseToken).catch(error => console.log(error))
+      yield fire.auth().signInWithCustomToken(user.FirebaseToken).catch((error) => {
+        console.log(`${new Date().toTimeString()} - Error calling Firebase signInWithCustomToken`)
+        console.log(error)
+      })
       yield put(startFire())
     },
 
@@ -211,7 +235,10 @@ export default kea({
         }
 
         const fetchCallback = fetchWrapper(fetchChannel)
-        fire.database().ref('/properties').on('value', fetchCallback, err => console.log(err))
+        fire.database().ref('/properties').on('value', fetchCallback, (err) => {
+          console.log(`${new Date().toTimeString()} - Error fetching Firebase records`)
+          console.log(err)
+        })
 
         while (true) {
           const action = yield take(fetchChannel)
