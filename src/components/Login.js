@@ -7,7 +7,7 @@ import { addEventHandlers, getAccountInfo } from '../gigya'
 
 const styles = {
   dialogTitle: {
-    backgroundColor: 'black',
+    backgroundColor: '#354A5F',
     color: 'white',
     borderBottom: '3px solid #0070b1'
   }
@@ -53,7 +53,7 @@ export default class Login extends React.Component {
     return (
       <div>
         <Dialog
-          title='CDC Catalog'
+          title='Customer Data Cloud Catalog'
           titleStyle={styles.dialogTitle}
           modal
           autoScrollBodyContent

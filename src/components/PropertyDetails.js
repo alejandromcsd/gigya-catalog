@@ -112,7 +112,7 @@ export class PropertyDetails extends React.Component {
         onClick={() => this.actions.setPropertyOnEdit(selectedProperty)}
         style={styles.button}
       />
-      <RaisedButton
+      {selectedProperty['Url'] && <RaisedButton
         label='View Implementation'
         labelPosition='before'
         primary
@@ -120,7 +120,7 @@ export class PropertyDetails extends React.Component {
         href={selectedProperty['Url']}
         target='_blank'
         style={styles.button}
-      />
+      />}
       <RaisedButton
         label='Share'
         labelPosition='before'
@@ -141,6 +141,12 @@ export class PropertyDetails extends React.Component {
   render () {
     const { isOpen, selectedProperty } = this.props
 
+    const created = `Created: ${selectedProperty['Created']}
+      (<a href='mailto:${selectedProperty['CreatedByEmail']}'>${selectedProperty['CreatedBy']}</a>) |`
+
+    const modified = `Last Modified: ${selectedProperty['LastModified']}
+      (<a href='mailto:${selectedProperty['LastModifiedByEmail']}'>${selectedProperty['LastModifiedBy']}</a>) |`
+
     const subtitle = `
       AM: ${selectedProperty['AM']} |
       IC: ${selectedProperty['IC']} |
@@ -148,8 +154,11 @@ export class PropertyDetails extends React.Component {
       Go Live: ${selectedProperty['GoLiveDate']} |
       Platform: ${selectedProperty['Platform']} |
       Country: ${selectedProperty['Country']} |
-      Category: ${selectedProperty['Category']}
+      Category: ${selectedProperty['Category']} |
+      ${selectedProperty['Created'] ? created : ''} ${selectedProperty['LastModified'] ? modified : ''}
     `
+
+    const divSubtitle = <div dangerouslySetInnerHTML={{__html: subtitle}} />
 
     if (!isOpen) return null
     return (
@@ -181,7 +190,7 @@ export class PropertyDetails extends React.Component {
             </CardMedia>
             <CardTitle
               title={selectedProperty['Implementation']}
-              subtitle={subtitle}
+              subtitle={divSubtitle}
             />
             <CardText>
               <div style={styles.wrapper}>
@@ -192,6 +201,7 @@ export class PropertyDetails extends React.Component {
                 selectedProperty[constants.fields.useConsent] ||
                 selectedProperty[constants.fields.useProfile]) &&
                 <div>
+                  <Divider />
                   <h3>{constants.labels.productsLabel}</h3>
                   <List style={styles.avatarContainer}>
                     {selectedProperty[constants.fields.useIdentity] &&

@@ -1,4 +1,5 @@
 const constants = {
+  appUrl: 'https://cdc-catalog.cfapps.eu10.hana.ondemand.com',
   skipAttributes: [
     'Id',
     'ImageUrl',
@@ -25,7 +26,7 @@ const constants = {
     centralizedLoginLabel: 'Has one login page for all sites in Group?',
     frontEndLabel: 'Front end libraries? (React, Angular, Vue, other)',
     overridingLabel: 'Overriding native browser methods?',
-    descriptionLabel: 'Additional details (Purpose, IdentitySync, Webhooks)',
+    descriptionLabel: 'Short description (Executive Summary or Technical Details)',
     productsLabel: 'Customer Data Cloud Products',
     referenceLabel: 'Customer authorised to use this implementation as a reference?'
   },
@@ -45,7 +46,11 @@ const constants = {
     centralizedLogin: 'CentralizedLoginSSO',
     frontEnd: 'FrontEndLibraries',
     overriding: 'OverridingNativeBrowser',
-    description: 'Description'
+    description: 'Description',
+    implementation: 'Implementation',
+    keywords: 'Keywords',
+    imageUrl: 'ImageUrl',
+    url: 'Url'
   },
   friendlyLabels: {
     identityProduct: 'SAP Customer Identity',

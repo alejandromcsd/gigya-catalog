@@ -1,4 +1,8 @@
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/auth'
+import 'firebase/database'
+import 'firebase/storage'
+
 var config = {
   apiKey: 'AIzaSyC_XZKmV-YcXcTmH3InlSM_mkG4Bmazc0I',
   authDomain: 'gigya-catalog.firebaseapp.com',

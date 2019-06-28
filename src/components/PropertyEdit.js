@@ -13,6 +13,7 @@ import propertyLogic from './logic/property.logic'
 import {blue500} from 'material-ui/styles/colors'
 import PropertyCapture from './PropertyCapture'
 import constants from '../constants'
+import {fromHTML} from '../utils'
 
 const styles = {
   errorStyle: {
@@ -66,7 +67,8 @@ const styles = {
       'keywordsList',
       'nextId',
       'uploadedImageUrl',
-      'uploadingImage'
+      'uploadingImage',
+      'currentUser'
     ]
   ],
   actions: [
@@ -90,6 +92,12 @@ export default class PropertyEdit extends React.Component {
       url: '',
       customer: '',
       goLiveDate: new Date(),
+      created: '',
+      lastModified: '',
+      createdBy: '',
+      createdByEmail: '',
+      lastModifiedBy: '',
+      lastModifiedByEmail: '',
       am: '',
       ic: '',
       tc: '',
@@ -127,6 +135,11 @@ export default class PropertyEdit extends React.Component {
         url: propertyOnEdit['Url'],
         customer: propertyOnEdit['Customer'],
         goLiveDate: new Date(propertyOnEdit['GoLiveDate']),
+        created: propertyOnEdit['Created'] ? new Date(propertyOnEdit['Created']) : '',
+        createdBy: propertyOnEdit['CreatedBy'] || '',
+        createdByEmail: propertyOnEdit['CreatedByEmail'] || '',
+        lastModifiedBy: propertyOnEdit['LastModifiedBy'],
+        lastModifiedByEmail: propertyOnEdit['LastModifiedByEmail'],
         am: propertyOnEdit['AM'],
         ic: propertyOnEdit['IC'],
         tc: propertyOnEdit['TC'],
@@ -135,13 +148,13 @@ export default class PropertyEdit extends React.Component {
         category: propertyOnEdit['Category'],
         tddUrl: propertyOnEdit[constants.fields.tdd],
         apiKey: propertyOnEdit[constants.fields.apiKey],
-        customFlows: this.renderTextbox(propertyOnEdit[constants.fields.customFlows]),
-        cms: this.renderTextbox(propertyOnEdit[constants.fields.cms]),
-        serverSession: this.renderTextbox(propertyOnEdit[constants.fields.serverSession]),
-        centralizedLoginSSO: this.renderTextbox(propertyOnEdit[constants.fields.centralizedLogin]),
-        frontEndLibraries: this.renderTextbox(propertyOnEdit[constants.fields.frontEnd]),
-        overridingNativeBrowser: this.renderTextbox(propertyOnEdit[constants.fields.overriding]),
-        description: this.renderTextbox(propertyOnEdit[constants.fields.description]),
+        customFlows: fromHTML(propertyOnEdit[constants.fields.customFlows]),
+        cms: fromHTML(propertyOnEdit[constants.fields.cms]),
+        serverSession: fromHTML(propertyOnEdit[constants.fields.serverSession]),
+        centralizedLoginSSO: fromHTML(propertyOnEdit[constants.fields.centralizedLogin]),
+        frontEndLibraries: fromHTML(propertyOnEdit[constants.fields.frontEnd]),
+        overridingNativeBrowser: fromHTML(propertyOnEdit[constants.fields.overriding]),
+        description: fromHTML(propertyOnEdit[constants.fields.description]),
         keywords: propertyOnEdit['Keywords'],
         otherKeywords: '',
         errors: {
@@ -154,11 +167,9 @@ export default class PropertyEdit extends React.Component {
     }
   }
 
-  renderTextbox = (val) => val ? val.replace(/<br\s*[/]?>/gi, '\n') : '';
+  encodeTextbox = (val) => val.replace(/(?:\r\n|\r|\n)/g, '<br />')
 
-  encodeTextbox = (val) => val.replace(/(?:\r\n|\r|\n)/g, '<br />');
-
-  ensureHTTPS = (url) => !url.match(/^[a-zA-Z]+:\/\//) ? `http://${url}` : url
+  ensureHTTPS = (url) => url ? (!url.match(/^[a-zA-Z]+:\/\//) ? `https://${url}` : url) : ''
 
   handleClose = () => this.actions.setPropertyOnEdit(null)
 
@@ -181,6 +192,9 @@ export default class PropertyEdit extends React.Component {
       implementation,
       url,
       goLiveDate,
+      created,
+      createdBy,
+      createdByEmail,
       am,
       ic,
       tc,
@@ -200,6 +214,8 @@ export default class PropertyEdit extends React.Component {
       otherKeywords
     } = this.state
 
+    const { currentUser } = this.props
+
     // TODO: Add centralised validations
     this.setState({ errors: {
       implementationError: implementation ? '' : 'This field is required',
@@ -211,17 +227,26 @@ export default class PropertyEdit extends React.Component {
     if (!implementation || !customer || !keywords || !keywords.length ||
       (!this.props.uploadedImageUrl && !this.props.propertyOnEdit.ImageUrl)) return
 
+    const isUpdate = !!this.props.propertyOnEdit['Id']
+    const createdDate = isUpdate ? created : new Date()
+
     this.actions.submitPropertyEdit({
-      'Id': this.props.propertyOnEdit['Id'] || this.props.nextId,
+      [constants.fields.id]: this.props.propertyOnEdit['Id'] || this.props.nextId,
       [constants.fields.useIdentity]: useIdentity || false,
       [constants.fields.useConsent]: useConsent || false,
       [constants.fields.useProfile]: useProfile || false,
       [constants.fields.useAsReference]: useAsReference || false,
-      'Implementation': implementation,
-      'Url': this.ensureHTTPS(url),
-      'Customer': customer,
-      'ImageUrl': this.props.uploadedImageUrl || this.props.propertyOnEdit.ImageUrl,
+      [constants.fields.implementation]: implementation,
+      [constants.fields.url]: this.ensureHTTPS(url),
+      [constants.fields.customer]: customer,
+      [constants.fields.imageUrl]: this.props.uploadedImageUrl || this.props.propertyOnEdit.ImageUrl,
       'GoLiveDate': goLiveDate ? goLiveDate.toDateString() : '',
+      'Created': createdDate ? createdDate.toDateString() : '',
+      'LastModified': new Date().toDateString(),
+      'CreatedBy': isUpdate ? createdBy : `${currentUser.profile.firstName} ${currentUser.profile.lastName}`,
+      'CreatedByEmail': isUpdate ? createdByEmail : currentUser.profile.email,
+      'LastModifiedBy': `${currentUser.profile.firstName} ${currentUser.profile.lastName}`,
+      'LastModifiedByEmail': currentUser.profile.email,
       'AM': am,
       'IC': ic,
       'TC': tc,
@@ -237,11 +262,11 @@ export default class PropertyEdit extends React.Component {
       [constants.fields.frontEnd]: this.encodeTextbox(frontEndLibraries),
       [constants.fields.overriding]: this.encodeTextbox(overridingNativeBrowser),
       [constants.fields.description]: this.encodeTextbox(description),
-      'Keywords': [
+      [constants.fields.keywords]: [
         ...keywords,
         ...(otherKeywords.length ? otherKeywords.split(',').map(v => v.trim()) : [])
       ]
-    })
+    }, isUpdate)
 
     this.setState({ errors: {
       implementationError: '',
@@ -309,7 +334,7 @@ export default class PropertyEdit extends React.Component {
       />
     ]
 
-    const imageButtonLabel = this.props.propertyOnEdit['Id'] ? 'Replace' : 'Add'
+    const imageButtonLabel = this.props.propertyOnEdit['Id'] ? 'Replace' : '(REQUIRED) Add'
 
     return (
       <div>
@@ -367,7 +392,7 @@ export default class PropertyEdit extends React.Component {
             onCheck={e => this.setState({ useAsReference: !this.state.useAsReference })}
           />
           <TextField
-            floatingLabelText='Implementation Name'
+            floatingLabelText='Implementation Name (Required)'
             value={implementation}
             onChange={e => {
               this.setState({
@@ -389,7 +414,7 @@ export default class PropertyEdit extends React.Component {
             fullWidth
           />
           <AutoComplete
-            floatingLabelText='Customer'
+            floatingLabelText='Customer (Required)'
             searchText={customer}
             style={styles.autoComplete}
             listStyle={styles.autoCompleteList}
@@ -417,6 +442,16 @@ export default class PropertyEdit extends React.Component {
             floatingLabelStyle={styles.floatingLabelStyle}
             floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
             ref={(input) => { this.datePickerGoLive = input }}
+            fullWidth
+          />
+          <TextField
+            floatingLabelText={constants.labels.descriptionLabel}
+            value={description}
+            onChange={e => this.setState({ description: e.target.value })}
+            floatingLabelStyle={styles.floatingLabelStyle}
+            floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
+            multiLine
+            rows={2}
             fullWidth
           />
           <AutoComplete
@@ -586,19 +621,9 @@ export default class PropertyEdit extends React.Component {
             rows={2}
             fullWidth
           />
-          <TextField
-            floatingLabelText={constants.labels.descriptionLabel}
-            value={description}
-            onChange={e => this.setState({ description: e.target.value })}
-            floatingLabelStyle={styles.floatingLabelStyle}
-            floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
-            multiLine
-            rows={2}
-            fullWidth
-          />
           <SelectField
             multiple
-            floatingLabelText='Keywords'
+            floatingLabelText='Keywords (Required)'
             value={keywords}
             floatingLabelStyle={styles.floatingLabelStyle}
             floatingLabelFocusStyle={styles.floatingLabelFocusStyle}

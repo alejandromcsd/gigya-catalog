@@ -12,13 +12,6 @@ export function showLogin () {
   })
 }
 
-export function showLiteReg () {
-  // gigya.accounts.showScreenSet({
-  //   screenSet: 'Default-LiteRegistration',
-  //   containerID: 'gigya-container-lite',
-  // })
-}
-
 export function showProfile () {
   gigya.accounts.showScreenSet({
     screenSet: 'Default-ProfileUpdate',
@@ -48,10 +41,38 @@ export function showCommunications () {
   })
 }
 
+export function sendNotification (msg) {
+  gigya.accounts.getJWT({
+    fields:"profile.email",
+    callback: (response) => {
+      if(response.errorCode == 0) {
+        // Get Firebase JWT
+        fetch('https://api-catalog.cfapps.eu10.hana.ondemand.com/notification/send', {
+          method: 'post',
+          headers: new Headers({
+            'Authorization': `Bearer ${response.id_token}`,
+            'Content-Type': 'application/json',
+          }),
+          body: JSON.stringify(msg),
+        })
+        .then(response => response.text()
+          .then((text) => {
+        }))
+        .catch(function(error) {
+          console.log(`${new Date().toTimeString()} - Error sending notification`);
+          console.error(error);
+        })
+      } else {
+        console.log(`${new Date().toTimeString()} - Error requesting a Gigya JWT: ${response.errorMessage}`);
+      }
+    }
+  })
+}
+
 export function getAccountInfo (callback) {
   // getAccountInfo replaced by JWT to integrate with Firebase
   gigya.accounts.getJWT({
-    fields:"profile.firstName,profile.email",
+    fields:"profile.firstName,profile.lastName,profile.email",
     callback: (response) => {
       if(response.errorCode == 0) {
         // Get JWT payload
@@ -60,14 +81,20 @@ export function getAccountInfo (callback) {
         var token = JSON.parse(window.atob(base64));
 
         // Get Firebase JWT
-        var url = 'https://alejandro.gigya-cs.com/gigya-catalog-auth/auth.php';
-        fetch(`${url}?id_token=${response.id_token}`)
+        fetch('https://api-catalog.cfapps.eu10.hana.ondemand.com/firebase/getToken', {
+          method: 'post',
+          headers: new Headers({
+            'Authorization': `Bearer ${response.id_token}`
+          }),
+        })
         .then(response => response.text()
           .then((text) => {
             if (response.ok) {
               callback({
                 profile: {
-                  firstName: token["profile.firstName"]
+                  firstName: token["profile.firstName"],
+                  lastName: token["profile.lastName"],
+                  email: token["profile.email"]
                 },
                 JWT: response,
                 FirebaseToken: text
@@ -107,7 +134,6 @@ export function addEventHandlers (onLogin, onLogout) {
       onLogout()
       setTimeout(() => {
         showLogin()
-        showLiteReg()
       }, 500)
     }
   })

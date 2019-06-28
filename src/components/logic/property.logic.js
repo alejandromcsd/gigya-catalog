@@ -4,7 +4,8 @@ import { put, call, take } from 'redux-saga/effects'
 import { delay, channel } from 'redux-saga'
 import fire from '../../fire'
 import constants from '../../constants'
-import { includesNonCase, removeCategory, removeCategoryValue, reduceToList } from '../../utils'
+import { sendNotification } from '../../gigya'
+import { includesNonCase, removeCategory, removeCategoryValue, reduceToList, toOneLine } from '../../utils'
 
 export default kea({
   actions: () => ({
@@ -19,7 +20,7 @@ export default kea({
     removeFilter: (filter) => ({ filter }),
     setFetchError: (message) => ({ message }),
     setPropertyOnEdit: (property) => ({ property }),
-    submitPropertyEdit: (property) => ({ property }),
+    submitPropertyEdit: (property, isUpdate) => ({ property, isUpdate }),
     toggleDialog: () => ({}),
     selectProperty: (property) => ({ property }),
     uploadImage: (image) => ({ image }),
@@ -150,8 +151,8 @@ export default kea({
 
           const keyVal = `${friendlyKeys(key)}: ${item[key] === true ? 'Yes' : item[key]}`
           return !constants.skipAttributes.includes(key) &&
-          !keysArray.includes(keyVal) &&
-          item[key]
+            !keysArray.includes(keyVal) &&
+            item[key]
             ? keysArray.push(keyVal) : null
         })
 
@@ -186,11 +187,11 @@ export default kea({
     keywordsList: [
       () => [selectors.properties], (properties) =>
         properties.reduce((keywords, item) =>
-          [...keywords, ...item['Keywords'].filter(k => !keywords.includes(k))], []), PropTypes.array
+          [...keywords, ...item['Keywords'].filter(k => !keywords.includes(k))], []).sort(), PropTypes.array
     ]
   }),
 
-  start: function * () {},
+  start: function * () { },
 
   takeLatest: ({ actions, workers }) => ({
     [actions.onLogin]: workers.fireAuth,
@@ -268,9 +269,51 @@ export default kea({
 
     * fireEdit (action) {
       const { selectProperty } = this.actions
-      const { property } = action.payload
+      const { property, isUpdate } = action.payload
 
       yield fire.database().ref(`/properties/${property.Id}`).update(property, err => console.log(err))
+
+      // Send notification via API
+      if (property && !isUpdate) {
+        const msg = {
+          text: [
+            {
+              fallback: `Implementation: ${property[constants.fields.implementation]}`,
+              color: '#36a64f',
+              pretext: 'An implementation has been added to the catalog:',
+              author_name: property[constants.fields.implementation],
+              title: property[constants.fields.customer],
+              title_link: `${constants.appUrl}/${property[constants.fields.id]}/`,
+              fields: [
+                {
+                  title: 'Keywords',
+                  value: property[constants.fields.keywords].join(', '),
+                  short: false
+                }
+              ],
+              image_url: property[constants.fields.imageUrl],
+              footer: 'Customer Data Cloud Catalog',
+              footer_icon: 'https://platform.slack-edge.com/img/default_application_icon.png',
+              ts: Math.round(+new Date() / 1000),
+              actions: [
+                {
+                  type: 'button',
+                  text: 'View in Catalog :open_file_folder:',
+                  url: `${constants.appUrl}/${property[constants.fields.id]}/`
+                },
+                ...(property[constants.fields.url] ? [{
+                  type: 'button',
+                  text: 'View implementation :earth_americas:',
+                  url: property[constants.fields.url]
+                }] : [])
+              ],
+              ...(property[constants.fields.description] && { text: toOneLine(property[constants.fields.description]) })
+            }
+          ]
+        }
+        sendNotification(msg)
+      }
+
       yield put(selectProperty(property))
     },
 
@@ -279,9 +322,10 @@ export default kea({
       const { image } = action.payload
 
       var ref = fire.storage().ref().child(`images/${new Date().valueOf()}_${image.name}`)
-
       var snapshot = yield ref.put(image)
-      yield put(setUploadedImageUrl(snapshot.metadata.downloadURLs[0]))
+      var docUrl = yield snapshot.ref.getDownloadURL()
+
+      yield put(setUploadedImageUrl(docUrl))
     }
   }
 })

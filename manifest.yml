@@ -1,0 +1,7 @@
+---
+applications:
+- name: cdc-catalog
+  path: ./build/
+  buildpacks:
+    - staticfile_buildpack
+  memory: 128M

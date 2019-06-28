@@ -54,3 +54,13 @@ export function toHTML (inputText) {
 export function isMobile () {
   return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
 }
+
+export function fromHTML (val) {
+  return val ? val.replace(/<br\s*[/]?>/gi, '\n') : ''
+}
+
+export function toOneLine (val) {
+  const suffix = val && val.length > 230 ? '...' : ''
+  var regex = /(<([^>]+)>)/ig
+  return val ? `${val.replace(/<br\s*[/]?>/gi, ' - ').replace(regex, '').substring(0, 230)} ${suffix}` : ''
+}
