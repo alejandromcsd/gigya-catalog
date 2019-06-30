@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom'
 import Dialog from 'material-ui/Dialog'
 import Chip from 'material-ui/Chip'
 import Avatar from 'material-ui/Avatar'
+import Subheader from 'material-ui/Subheader'
 import List from 'material-ui/List/List'
 import Snackbar from 'material-ui/Snackbar'
 import ListItem from 'material-ui/List/ListItem'
@@ -12,9 +13,13 @@ import RaisedButton from 'material-ui/RaisedButton'
 import {Card, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card'
 import LanguageIcon from 'material-ui/svg-icons/action/language'
 import ShareIcon from 'material-ui/svg-icons/social/share'
+import ReferenceIcon from 'material-ui/svg-icons/maps/local-offer'
+import DescriptionIcon from 'material-ui/svg-icons/action/description'
 import ModeEdit from 'material-ui/svg-icons/editor/mode-edit'
+import ExtensionIcon from 'material-ui/svg-icons/action/extension'
 import propertyLogic from './logic/property.logic'
 import {toHTML, copyURLToClipboard} from '../utils'
+import MobileTearSheet from './MobileTearSheet'
 import constants from '../constants'
 
 const styles = {
@@ -52,6 +57,36 @@ const styles = {
   detailsSection: {
     paddingTop: '30px',
     paddingBottom: '10px'
+  },
+  subDetailSection: {
+    paddingTop: '10px',
+    paddingBottom: '5px',
+    display: 'list-item',
+    listStyleType: 'disc',
+    marginLeft: 25
+  },
+  dialog: {
+    width: '60%',
+    maxWidth: 'none'
+  },
+  dialogBody: {
+    backgroundColor: '#edeff0'
+  },
+  headerAvatar: {
+    backgroundColor: '#0070b1',
+    color: 'white'
+  },
+  headerLabel: {
+    fontWeight: 'bold'
+  },
+  subHeaderLabel: {
+    fontWeight: 'bold',
+    fontSize: 15,
+    margin: '5px 0 5px'
+  },
+  productsContainer: {
+    display: 'flex',
+    flexWrap: 'wrap'
   }
 }
 
@@ -175,6 +210,8 @@ export class PropertyDetails extends React.Component {
           autoScrollBodyContent
           titleStyle={styles.dialogTitle}
           open={isOpen}
+          contentStyle={styles.dialog}
+          bodyStyle={styles.dialogBody}
           onRequestClose={this.toggleDetails}
         >
           <Card>
@@ -197,148 +234,165 @@ export class PropertyDetails extends React.Component {
                 {selectedProperty['Keywords'].map(this.renderChip, this)}
               </div>
 
-              {(selectedProperty[constants.fields.useIdentity] ||
-                selectedProperty[constants.fields.useConsent] ||
-                selectedProperty[constants.fields.useProfile]) &&
-                <div>
-                  <Divider />
-                  <h3>{constants.labels.productsLabel}</h3>
-                  <List style={styles.avatarContainer}>
+              {/* PRODUCTS */}
+              <div style={styles.productsContainer}>
+                <MobileTearSheet>
+                  <List>
+                    <Subheader>SAP Customer Data Cloud Products</Subheader>
                     {selectedProperty[constants.fields.useIdentity] &&
                     <ListItem
+                      primaryText='SAP Customer Identity'
                       disabled
-                      leftAvatar={
-                        <Avatar
-                          color={styles.avatar.color}
-                          size={30}
-                          backgroundColor={styles.avatar.backgroundColor}
-                        >
-                        I
-                        </Avatar>
-                      }
-                    >
-                    Identity
-                    </ListItem>
+                    />
                     }
                     {selectedProperty[constants.fields.useConsent] &&
                     <ListItem
+                      primaryText='SAP Customer Consent'
                       disabled
-                      leftAvatar={
-                        <Avatar
-                          color={styles.avatar.color}
-                          size={30}
-                          backgroundColor={styles.avatar.backgroundColor}
-                        >
-                        C
-                        </Avatar>
-                      }
-                    >
-                    Consent
-                    </ListItem>
+                    />
                     }
                     {selectedProperty[constants.fields.useProfile] &&
                     <ListItem
+                      primaryText='SAP Customer Profile'
                       disabled
-                      leftAvatar={
-                        <Avatar
-                          color={styles.avatar.color}
-                          size={30}
-                          backgroundColor={styles.avatar.backgroundColor}
-                        >
-                        P
-                        </Avatar>
-                      }
-                    >
-                    Profile
-                    </ListItem>
+                    />
                     }
                   </List>
-                </div>
-              }
+                </MobileTearSheet>
+                <MobileTearSheet>
+                  <List>
+                    <Subheader>Other SAP CX Solutions</Subheader>
+                    <ListItem
+                      primaryText='None'
+                      disabled
+                    />
+                    {/* <ListItem
+                      primaryText='Show your status'
+                      disabled
+                    /> */}
+                  </List>
+                </MobileTearSheet>
+              </div>
+              {/* END PRODUCTS */}
 
-              <div style={styles.detailsSection}>
+              <div>
                 <Divider />
-                <h3>{constants.labels.referenceLabel}</h3>
+                <List>
+                  <ListItem
+                    disabled
+                    leftAvatar={
+                      <Avatar
+                        icon={<ReferenceIcon />}
+                        color={styles.headerAvatar.color}
+                        backgroundColor={styles.headerAvatar.backgroundColor}
+                      />
+                    }
+                  >
+                    <div style={styles.headerLabel}>{constants.labels.referenceLabel}</div>
+                  </ListItem>
+                </List>
                 <div>{selectedProperty[constants.fields.useAsReference]
                   ? 'Yes, customer has authorised to use this implementation as a reference with externals'
                   : 'No, customer has not authorised yet to use this implementation as a reference with externals'
                 }</div>
               </div>
 
-              {selectedProperty[constants.fields.tdd] &&
               <div style={styles.detailsSection}>
                 <Divider />
-                <h3>{constants.labels.tddLabel}</h3>
-                <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.tdd])}} />
+                <List>
+                  <ListItem
+                    disabled
+                    leftAvatar={
+                      <Avatar
+                        icon={<DescriptionIcon />}
+                        color={styles.headerAvatar.color}
+                        backgroundColor={styles.headerAvatar.backgroundColor}
+                      />
+                    }
+                  >
+                    <div style={styles.headerLabel}>{constants.labels.descriptionLabel}</div>
+                  </ListItem>
+                </List>
+                {selectedProperty[constants.fields.description] &&
+                  <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.description])}} />
+                }
               </div>
-              }
 
-              {selectedProperty[constants.fields.apiKey] &&
               <div style={styles.detailsSection}>
                 <Divider />
-                <h3>{constants.labels.apiKeyLabel}</h3>
-                <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.apiKey])}} />
-              </div>
-              }
+                <List>
+                  <ListItem
+                    disabled
+                    leftAvatar={
+                      <Avatar
+                        icon={<ExtensionIcon />}
+                        color={styles.headerAvatar.color}
+                        backgroundColor={styles.headerAvatar.backgroundColor}
+                      />
+                    }
+                  >
+                    <div style={styles.headerLabel}>{constants.labels.technicalDetails}</div>
+                  </ListItem>
+                </List>
 
-              {selectedProperty[constants.fields.customFlows] &&
-              <div style={styles.detailsSection}>
-                <Divider />
-                <h3>{constants.labels.customFlowsLabel}</h3>
-                <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.customFlows])}} />
-              </div>
-              }
+                {selectedProperty[constants.fields.tdd] &&
+                <div style={styles.subDetailSection}>
+                  <div style={styles.headerLabel}>{constants.labels.tddLabel}</div>
+                  <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.tdd])}} />
+                </div>
+                }
 
-              {selectedProperty[constants.fields.cms] &&
-              <div style={styles.detailsSection}>
-                <Divider />
-                <h3>{constants.labels.cmsLabel}</h3>
-                <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.cms])}} />
-              </div>
-              }
+                {selectedProperty[constants.fields.apiKey] &&
+                <div style={styles.subDetailSection}>
+                  <div style={styles.subHeaderLabel}>{constants.labels.apiKeyLabel}</div>
+                  <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.apiKey])}} />
+                </div>
+                }
 
-              {selectedProperty[constants.fields.serverSession] &&
-              <div style={styles.detailsSection}>
-                <Divider />
-                <h3>{constants.labels.serverSessionLabel}</h3>
-                <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.serverSession])}} />
-              </div>
-              }
+                {selectedProperty[constants.fields.customFlows] &&
+                <div style={styles.subDetailSection}>
+                  <div style={styles.subHeaderLabel}>{constants.labels.customFlowsLabel}</div>
+                  <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.customFlows])}} />
+                </div>
+                }
 
-              {selectedProperty[constants.fields.centralizedLogin] &&
-              <div style={styles.detailsSection}>
-                <Divider />
-                <h3>{constants.labels.centralizedLoginLabel}</h3>
-                <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.centralizedLogin])}} />
-              </div>
-              }
+                {selectedProperty[constants.fields.cms] &&
+                <div style={styles.subDetailSection}>
+                  <div style={styles.subHeaderLabel}>{constants.labels.cmsLabel}</div>
+                  <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.cms])}} />
+                </div>
+                }
 
-              {selectedProperty[constants.fields.frontEnd] &&
-              <div style={styles.detailsSection}>
-                <Divider />
-                <h3>{constants.labels.frontEndLabel}</h3>
-                <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.frontEnd])}} />
-              </div>
-              }
+                {selectedProperty[constants.fields.serverSession] &&
+                <div style={styles.subDetailSection}>
+                  <div style={styles.subHeaderLabel}>{constants.labels.serverSessionLabel}</div>
+                  <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.serverSession])}} />
+                </div>
+                }
 
-              {selectedProperty[constants.fields.overriding] &&
-              <div style={styles.detailsSection}>
-                <Divider />
-                <h3>{constants.labels.overridingLabel}</h3>
-                <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.overriding])}} />
-              </div>
-              }
+                {selectedProperty[constants.fields.centralizedLogin] &&
+                <div style={styles.subDetailSection}>
+                  <div style={styles.subHeaderLabel}>{constants.labels.centralizedLoginLabel}</div>
+                  <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.centralizedLogin])}} />
+                </div>
+                }
 
-              {selectedProperty[constants.fields.description] &&
-              <div style={styles.detailsSection}>
-                <Divider />
-                <h3>{constants.labels.descriptionLabel}</h3>
-                <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.description])}} />
+                {selectedProperty[constants.fields.frontEnd] &&
+                <div style={styles.subDetailSection}>
+                  <div style={styles.subHeaderLabel}>{constants.labels.frontEndLabel}</div>
+                  <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.frontEnd])}} />
+                </div>
+                }
+
+                {selectedProperty[constants.fields.overriding] &&
+                <div style={styles.subDetailSection}>
+                  <div style={styles.subHeaderLabel}>{constants.labels.overridingLabel}</div>
+                  <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.overriding])}} />
+                </div>
+                }
               </div>
-              }
             </CardText>
           </Card>
-
         </Dialog>
       </div>
     )

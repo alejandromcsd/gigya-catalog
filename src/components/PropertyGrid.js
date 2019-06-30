@@ -11,7 +11,11 @@ const styles = {
   root: {
     display: 'flex',
     flexWrap: 'wrap',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
+    backgroundColor: '#edeff0',
+    minHeight: 500,
+    paddingBottom: 40,
+    paddingTop: 30
   },
   gridList: {
     width: '100%',

@@ -7,8 +7,14 @@ import UnfoldMore from 'material-ui/svg-icons/navigation/arrow-drop-down'
 import propertyLogic from './logic/property.logic'
 
 const styles = {
-  paper: {
-    marginTop: 20
+  bottomNav: {
+    backgroundColor: '#354A5F'
+  },
+  bottomNavItem: {
+    color: 'white'
+  },
+  buttonButton: {
+    fill: 'white'
   }
 }
 
@@ -33,16 +39,17 @@ export default class LoadMore extends React.Component {
     if (scrollCount > searchResults.length) return null
 
     return (
-      <Paper style={styles.paper} zDepth={1}>
-        <BottomNavigation>
+      <Paper zDepth={1}>
+        <BottomNavigation style={styles.bottomNav}>
           <BottomNavigationItem
-            label={`Show more (Displaying ${scrollCount})`}
-            icon={<ExpandMore />}
+            label={<label style={styles.bottomNavItem}>{`Show more (Displaying ${scrollCount})`}</label>}
+            icon={<ExpandMore style={styles.buttonButton} />}
+            style={styles.bottomNavItem}
             onClick={() => this.actions.showMoreItems()}
           />
           <BottomNavigationItem
-            label={`Show all (Total ${searchResults.length})`}
-            icon={<UnfoldMore />}
+            label={<label style={styles.bottomNavItem}>{`Show all (Total ${searchResults.length})`}</label>}
+            icon={<UnfoldMore style={styles.buttonButton} />}
             onClick={() => this.actions.showAll(searchResults.length)}
           />
         </BottomNavigation>

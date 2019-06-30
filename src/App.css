@@ -11,6 +11,14 @@
   background-color: #354A5F!important;
 }
 
+.catalog-sortby button {
+    fill: #354A5F!important;
+}
+
+.catalog-loadmore > div {
+    background-color: #354A5F;
+}
+
 /* BEGIN DROPZONE STYLE */
 
 .dropzoneTextStyle {

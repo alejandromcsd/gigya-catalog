@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'kea'
 import Chip from 'material-ui/Chip'
 import AutoComplete from 'material-ui/AutoComplete'
-import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar'
+import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar'
 import RaisedButton from 'material-ui/FlatButton'
 import PhoneIcon from 'material-ui/svg-icons/hardware/phone-iphone'
 import RetailIcon from 'material-ui/svg-icons/action/done-all'
@@ -46,41 +46,28 @@ const styles = {
 }
 
 @connect({
-  actions: [
-    propertyLogic, [
-      'addFilter',
-      'removeFilter',
-      'setSortBy'
-    ]
-  ],
-  props: [
-    propertyLogic, [
-      'keywords',
-      'filters',
-      'sortBy',
-      'fullScreen'
-    ]
-  ]
+  actions: [propertyLogic, ['addFilter', 'removeFilter', 'setSortBy']],
+  props: [propertyLogic, ['keywords', 'filters', 'sortBy', 'fullScreen']]
 })
 export class PropertyFilters extends React.Component {
   state = {
     searchText: ''
-  };
+  }
 
-  handleNewRequest = (text) => {
+  handleNewRequest = text => {
     this.actions.addFilter(text)
     this.setState({
       searchText: ''
     })
-  };
+  }
 
-  handleUpdateInput = (searchText) => {
+  handleUpdateInput = searchText => {
     this.setState({
       searchText: searchText
     })
-  };
+  }
 
-  renderChip = (data) => {
+  renderChip = data => {
     return (
       <Chip
         key={data}
@@ -92,7 +79,7 @@ export class PropertyFilters extends React.Component {
         {data}
       </Chip>
     )
-  };
+  }
 
   render () {
     const { keywords, filters, sortBy, fullScreen } = this.props
@@ -103,22 +90,16 @@ export class PropertyFilters extends React.Component {
 
     // eslint-disable-next-line
     const w = jQuery(window).width()
-    const filterLabel = w >= 1200
-      ? 'Or search by Customer, Implementation, AM, IC, TC, Url, Country, Platform, Category or Keyword'
-      : 'Or search by...'
+    const filterLabel =
+      w >= 1200
+        ? 'Or search by Customer, Implementation, Country, Platform, Category or Keyword'
+        : 'Or search by...'
 
     return (
       <div>
         <Toolbar style={styles.toolbar}>
           <ToolbarGroup firstChild>
-            <DropDownMenu value={sortBy} onChange={(event, index, value) => setSortBy(value)}>
-              <MenuItem value={constants.fields.id} primaryText='Sort by: Id' />
-              <MenuItem value={constants.fields.goLiveDate} primaryText='Sort by: Go Live' />
-              <MenuItem value={constants.fields.customer} primaryText='Sort by: Customer' />
-            </DropDownMenu>
-          </ToolbarGroup>
-          <ToolbarGroup lastChild>
-            <ToolbarTitle style={styles.toolbarTitle} text='Quick filters' />
+            <ToolbarTitle style={styles.toolbarTitle} text='Quick filters:' />
             <RaisedButton
               style={styles.button}
               label='Consent'
@@ -144,6 +125,23 @@ export class PropertyFilters extends React.Component {
               onClick={() => addFilter('Keyword: SSO')}
             />
           </ToolbarGroup>
+          <ToolbarGroup lastChild>
+            <DropDownMenu
+              value={sortBy}
+              className='catalog-sortby'
+              onChange={(event, index, value) => setSortBy(value)}
+            >
+              <MenuItem value={constants.fields.id} primaryText='Sort results by: Date Added' />
+              <MenuItem
+                value={constants.fields.goLiveDate}
+                primaryText='Sort results by: Go Live Date'
+              />
+              <MenuItem
+                value={constants.fields.customer}
+                primaryText='Sort results by: Customer'
+              />
+            </DropDownMenu>
+          </ToolbarGroup>
         </Toolbar>
         <AutoComplete
           floatingLabelText={filterLabel}
@@ -158,9 +156,7 @@ export class PropertyFilters extends React.Component {
           fullWidth
         />
 
-        <div style={styles.wrapper}>
-          {filters.map(this.renderChip, this)}
-        </div>
+        <div style={styles.wrapper}>{filters.map(this.renderChip, this)}</div>
       </div>
     )
   }

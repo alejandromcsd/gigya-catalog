@@ -15,10 +15,19 @@ const constants = {
     'CentralizedLoginSSO',
     'FrontEndLibraries',
     'OverridingNativeBrowser',
-    'useAsReference'
+    'UseAsReference',
+    'Created',
+    'LastModified',
+    'CreatedBy',
+    'CreatedByEmail',
+    'LastModifiedBy',
+    'LastModifiedByEmail',
+    'AM',
+    'IC',
+    'TC'
   ],
   labels: {
-    tddLabel: 'TDD URL',
+    tddLabel: 'TDD Url',
     apiKeyLabel: 'API Key',
     customFlowsLabel: 'Custom registration/login flows?',
     cmsLabel: 'Is using CMS?',
@@ -26,7 +35,8 @@ const constants = {
     centralizedLoginLabel: 'Has one login page for all sites in Group?',
     frontEndLabel: 'Front end libraries? (React, Angular, Vue, other)',
     overridingLabel: 'Overriding native browser methods?',
-    descriptionLabel: 'Short description (Executive Summary or Technical Details)',
+    descriptionLabel: 'Implementation Description',
+    technicalDetails: 'Technical Details',
     productsLabel: 'Customer Data Cloud Products',
     referenceLabel: 'Customer authorised to use this implementation as a reference?'
   },
