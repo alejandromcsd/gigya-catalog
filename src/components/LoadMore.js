@@ -22,7 +22,8 @@ const styles = {
   props: [
     propertyLogic, [
       'searchResults',
-      'scrollCount'
+      'scrollCount',
+      'activeTab'
     ]
   ],
   actions: [
@@ -34,9 +35,9 @@ const styles = {
 })
 export default class LoadMore extends React.Component {
   render () {
-    const { searchResults, scrollCount } = this.props
+    const { searchResults, scrollCount, activeTab } = this.props
 
-    if (scrollCount > searchResults.length) return null
+    if (scrollCount > searchResults.length || activeTab === 'report') return null
 
     return (
       <Paper zDepth={1}>

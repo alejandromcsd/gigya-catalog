@@ -1,4 +1,5 @@
 const constants = {
+  pageSize: 16,
   appUrl: 'https://cdc-catalog.cfapps.eu10.hana.ondemand.com',
   skipAttributes: [
     'Id',
@@ -24,7 +25,8 @@ const constants = {
     'LastModifiedByEmail',
     'AM',
     'IC',
-    'TC'
+    'TC',
+    'TA'
   ],
   labels: {
     tddLabel: 'TDD Url',
@@ -65,12 +67,28 @@ const constants = {
   friendlyLabels: {
     identityProduct: 'SAP Customer Identity',
     consentProduct: 'SAP Customer Consent',
-    profileProduct: 'SAP Customer Profile'
+    profileProduct: 'SAP Customer Profile',
+    cdcProducts: 'CDC Products'
   },
   friendlyFilters: {
     identityProduct: 'SAP Customer Identity: Yes',
     consentProduct: 'SAP Customer Consent: Yes',
+    identityProductNOT: 'SAP Customer Identity: No',
+    consentProductNOT: 'SAP Customer Consent: No',
     profileProduct: 'SAP Customer Profile: Yes'
+  },
+  periods: {
+    thisYear: 'This year',
+    lastYear: 'Last year',
+    thisQuarter: 'This quarter',
+    lastQuarter: 'Last quarter',
+    thisMonth: 'This month',
+    lastMonth: 'Last month'
+  },
+  productCombos: {
+    identity: 'Identity, Profile',
+    consent: 'Consent, Profile',
+    all: 'All products'
   }
 }
 

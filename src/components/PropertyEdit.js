@@ -61,6 +61,7 @@ const styles = {
       'amList',
       'icList',
       'tcList',
+      'taList',
       'countryList',
       'platformList',
       'categoryList',
@@ -101,6 +102,7 @@ export default class PropertyEdit extends React.Component {
       am: '',
       ic: '',
       tc: '',
+      ta: '',
       country: '',
       platform: '',
       category: '',
@@ -143,6 +145,7 @@ export default class PropertyEdit extends React.Component {
         am: propertyOnEdit['AM'],
         ic: propertyOnEdit['IC'],
         tc: propertyOnEdit['TC'],
+        ta: propertyOnEdit['TA'],
         country: propertyOnEdit['Country'],
         platform: propertyOnEdit['Platform'],
         category: propertyOnEdit['Category'],
@@ -198,6 +201,7 @@ export default class PropertyEdit extends React.Component {
       am,
       ic,
       tc,
+      ta,
       country,
       platform,
       category,
@@ -250,6 +254,7 @@ export default class PropertyEdit extends React.Component {
       'AM': am,
       'IC': ic,
       'TC': tc,
+      'TA': ta,
       'Country': country,
       'Platform': platform,
       'Category': category,
@@ -283,6 +288,7 @@ export default class PropertyEdit extends React.Component {
       amList,
       icList,
       tcList,
+      taList,
       countryList,
       platformList,
       categoryList,
@@ -303,6 +309,7 @@ export default class PropertyEdit extends React.Component {
       am,
       ic,
       tc,
+      ta,
       country,
       platform,
       category,
@@ -494,8 +501,23 @@ export default class PropertyEdit extends React.Component {
             onUpdateInput={tc => this.setState({ tc })}
             floatingLabelStyle={styles.floatingLabelStyle}
             floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
-            onNewRequest={() => this.autoCompleteCountry.focus()}
+            onNewRequest={() => this.autoCompleteTA.focus()}
             ref={(input) => { this.autoCompleteTC = input }}
+            openOnFocus
+            fullWidth
+          />
+          <AutoComplete
+            floatingLabelText='Technical Architect'
+            searchText={ta}
+            style={styles.autoComplete}
+            listStyle={styles.autoCompleteList}
+            filter={AutoComplete.fuzzyFilter}
+            dataSource={taList}
+            onUpdateInput={ta => this.setState({ ta })}
+            floatingLabelStyle={styles.floatingLabelStyle}
+            floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
+            onNewRequest={() => this.autoCompleteCountry.focus()}
+            ref={(input) => { this.autoCompleteTA = input }}
             openOnFocus
             fullWidth
           />

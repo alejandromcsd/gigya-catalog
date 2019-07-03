@@ -31,7 +31,8 @@ const styles = {
     float: 'right'
   },
   chip: {
-    marginRight: 4
+    marginRight: 4,
+    marginTop: 4
   },
   wrapper: {
     display: 'flex',
@@ -186,6 +187,7 @@ export class PropertyDetails extends React.Component {
       AM: ${selectedProperty['AM']} |
       IC: ${selectedProperty['IC']} |
       TC: ${selectedProperty['TC']} |
+      TA: ${selectedProperty['TA']} |
       Go Live: ${selectedProperty['GoLiveDate']} |
       Platform: ${selectedProperty['Platform']} |
       Country: ${selectedProperty['Country']} |

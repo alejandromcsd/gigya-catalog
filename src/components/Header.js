@@ -19,7 +19,12 @@ const styles = {
     color: 'white'
   },
   header: {
-    fontSize: 18
+    fontSize: 15
+  },
+  bar: {
+    marginTop: -10,
+    height: 60,
+    overflow: 'hidden'
   }
 }
 
@@ -47,6 +52,7 @@ export default class Header extends React.Component {
       'AM': '',
       'IC': '',
       'TC': '',
+      'TA': '',
       'Country': '',
       'Platform': '',
       'Category': '',
@@ -62,7 +68,8 @@ export default class Header extends React.Component {
     if (!currentUser) return null
     return (
       <AppBar
-        title={<span>Customer Data Cloud Catalog</span>}
+        title={<span>Customer Data Cloud: Go-Lives Catalog</span>}
+        style={styles.bar}
         titleStyle={styles.header}
         iconElementLeft={<IconButton><NavigationClose /></IconButton>}
         iconElementRight={

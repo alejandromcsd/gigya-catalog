@@ -5,7 +5,7 @@ import { delay, channel } from 'redux-saga'
 import fire from '../../fire'
 import constants from '../../constants'
 import { sendNotification } from '../../gigya'
-import { includesNonCase, removeCategory, removeCategoryValue, reduceToList, toOneLine } from '../../utils'
+import { includesNonCase, removeCategory, removeCategoryValue, reduceToList, toOneLine, isMatchGoLiveDate } from '../../utils'
 
 export default kea({
   actions: () => ({
@@ -28,7 +28,8 @@ export default kea({
     showMoreItems: () => ({}),
     showAll: (resultsCount) => ({ resultsCount }),
     setSortBy: (sortField) => ({ sortField }),
-    toggleFullScreen: () => ({})
+    toggleFullScreen: () => ({}),
+    changeTab: (activeTab, resultsCount) => ({ activeTab, resultsCount })
   }),
 
   reducers: ({ actions }) => ({
@@ -85,18 +86,22 @@ export default kea({
       [actions.uploadImage]: () => '',
       [actions.setPropertyOnEdit]: () => ''
     }],
-    scrollCount: [12, PropTypes.number, {
+    scrollCount: [constants.pageSize, PropTypes.number, {
       [actions.showMoreItems]: (state) => state + 20,
       [actions.showAll]: (_, payload) => payload.resultsCount + 1,
-      [actions.fetchProperties]: () => 12,
-      [actions.addFilter]: () => 12,
-      [actions.removeFilter]: () => 12
+      [actions.fetchProperties]: () => constants.pageSize,
+      [actions.addFilter]: () => constants.pageSize,
+      [actions.removeFilter]: () => constants.pageSize,
+      [actions.changeTab]: (_, payload) => payload.activeTab === 'report' ? payload.resultsCount + 1 : constants.pageSize
     }],
     sortBy: [constants.fields.id, PropTypes.string, {
       [actions.setSortBy]: (_, payload) => payload.sortField
     }],
     fullScreen: [false, PropTypes.bool, {
       [actions.toggleFullScreen]: (state) => !state
+    }],
+    activeTab: ['grid', PropTypes.string, {
+      [actions.changeTab]: (_, payload) => payload.activeTab
     }]
   }),
 
@@ -104,22 +109,26 @@ export default kea({
     searchResults: [
       () => [selectors.properties, selectors.filters, selectors.sortBy],
       (properties, filters, sortBy) => !filters ? properties : properties
-        .filter(obj => filters.every(word => {
+        .filter(propertyItem => filters.every(filter => {
           // friendly keys replacement (i.e. from Product Name: Yes to use useConsent: true)
           const unfriendlyKeys = (rawKey) => ({
             [constants.friendlyFilters.identityProduct]: `${constants.fields.useIdentity}: true`,
             [constants.friendlyFilters.consentProduct]: `${constants.fields.useConsent}: true`,
+            [constants.friendlyFilters.identityProductNOT]: `${constants.fields.useIdentity}: false`,
+            [constants.friendlyFilters.consentProductNOT]: `${constants.fields.useConsent}: false`,
             [constants.friendlyFilters.profileProduct]: `${constants.fields.useProfile}: true`
           })[rawKey] || rawKey
 
-          word = unfriendlyKeys(word)
-          const filterCategory = removeCategoryValue(word)
+          filter = unfriendlyKeys(filter)
+          const filterCategory = removeCategoryValue(filter)
 
-          return obj['Keywords'].some(k => k.toLowerCase().includes(removeCategory(word).toLowerCase())) ||
-            Object.keys(obj).some((key) =>
+          // actual filter happens here: look into keywords > field values
+          return propertyItem['Keywords'].some(k => k.toLowerCase().includes(removeCategory(filter).toLowerCase())) ||
+          (filter.startsWith('Go-Live') && isMatchGoLiveDate(propertyItem[constants.fields.goLiveDate], filter)) ||
+            Object.keys(propertyItem).some((key) =>
               !constants.skipAttributes.includes(key) &&
               key === filterCategory &&
-              includesNonCase(obj[key], removeCategory(word)))
+              includesNonCase(propertyItem[key], removeCategory(filter)))
         }))
         .sort((a, b) => {
           switch (sortBy) {
@@ -174,6 +183,9 @@ export default kea({
     ],
     tcList: [
       () => [selectors.properties], (p) => reduceToList(p, 'TC'), PropTypes.array
+    ],
+    taList: [
+      () => [selectors.properties], (p) => reduceToList(p, 'TA'), PropTypes.array
     ],
     countryList: [
       () => [selectors.properties], (p) => reduceToList(p, 'Country'), PropTypes.array

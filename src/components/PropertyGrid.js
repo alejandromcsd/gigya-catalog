@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom'
 import {GridList} from 'material-ui/GridList'
 import FlatButton from 'material-ui/FlatButton'
 import {Card, CardActions, CardHeader, CardMedia} from 'material-ui/Card'
+import OffIcon from 'material-ui/svg-icons/file/cloud-off'
 import LinearProgress from 'material-ui/LinearProgress'
 import propertyLogic from './logic/property.logic'
 
@@ -22,7 +23,8 @@ const styles = {
     height: '100%'
   },
   progress: {
-    marginTop: 50
+    marginTop: 50,
+    textAlign: 'center'
   },
   tile: {
     cursor: 'pointer',
@@ -105,7 +107,10 @@ export class PropertyGrid extends React.Component {
           </div>
         ) : (
           <div style={styles.progress}>
-            {error ? `Error: ${error}` : 'No properties found'}
+            <OffIcon />
+            <div>
+              {error ? `Error: ${error}` : 'No Go-Lives found'}
+            </div>
           </div>
         )
         }

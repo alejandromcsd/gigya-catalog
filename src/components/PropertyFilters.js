@@ -26,7 +26,7 @@ const styles = {
   wrapper: {
     display: 'flex',
     flexWrap: 'wrap',
-    marginBottom: 20
+    marginBottom: 10
   },
   autoComplete: {
     padding: 10,
@@ -104,7 +104,7 @@ export class PropertyFilters extends React.Component {
               style={styles.button}
               label='Consent'
               icon={<RetailIcon />}
-              onClick={() => addFilter('SAP Customer Consent: Yes')}
+              onClick={() => addFilter(constants.friendlyFilters.consentProduct)}
             />
             <RaisedButton
               style={styles.button}

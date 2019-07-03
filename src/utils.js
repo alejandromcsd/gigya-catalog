@@ -9,6 +9,55 @@ export function removeCategoryValue (keyword) {
   return keyword.substring(0, keyword.indexOf(':'))
 }
 
+function getQuarter (d) {
+  d = d || new Date()
+  var q = [1, 2, 3, 4]
+  return q[Math.floor(d.getMonth() / 3)]
+}
+
+export function isMatchGoLiveDate (itemDate, filter) {
+  const filterPeriod = removeCategory(filter)
+  const now = new Date()
+  const goLive = new Date(itemDate)
+  var year = now.getFullYear()
+
+  switch (filterPeriod) {
+    case 'This month':
+      return goLive.getMonth() === now.getMonth() &&
+        goLive.getFullYear() === now.getFullYear()
+
+    case 'Last month':
+      let lastMonth = now.getMonth() - 1
+      if (lastMonth === -1) {
+        lastMonth = 11
+        --year
+      }
+      return goLive.getMonth() === lastMonth &&
+        goLive.getFullYear() === year
+
+    case 'This quarter':
+      return getQuarter(goLive) === getQuarter() &&
+        goLive.getFullYear() === now.getFullYear()
+
+    case 'Last quarter':
+      let lastQuarter = getQuarter() - 1
+      if (lastQuarter === 0) {
+        lastQuarter = 4
+        --year
+      }
+
+      return getQuarter(goLive) === lastQuarter &&
+        goLive.getFullYear() === year
+
+    case 'This year':
+      return goLive.getFullYear() === now.getFullYear()
+
+    case 'Last year':
+      return goLive.getFullYear() === --year
+  }
+  return false
+}
+
 export function copyURLToClipboard () {
   var dummy = document.createElement('input')
   var text = window.location.href
