@@ -23,8 +23,7 @@ const styles = {
   },
   bar: {
     marginTop: -10,
-    height: 60,
-    overflow: 'hidden'
+    height: 60
   }
 }
 
@@ -48,6 +47,7 @@ export default class Header extends React.Component {
       'Url': '',
       'Customer': '',
       'ImageUrl': '',
+      'KickOffDate': new Date(),
       'GoLiveDate': new Date(),
       'AM': '',
       'IC': '',
@@ -85,7 +85,7 @@ export default class Header extends React.Component {
                 }
                 <FlatButton style={styles.button} onClick={logout} label='LOGOUT' />
 
-                <IconButton tooltip='Full screen' onClick={() => toggleFullScreen()}>
+                <IconButton tooltip='Full screen' tooltipPosition='bottom-left' onClick={() => toggleFullScreen()}>
                   <Open color={styles.button.color} />
                 </IconButton>
 

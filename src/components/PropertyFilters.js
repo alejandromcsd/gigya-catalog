@@ -7,7 +7,7 @@ import RaisedButton from 'material-ui/FlatButton'
 import PhoneIcon from 'material-ui/svg-icons/hardware/phone-iphone'
 import RetailIcon from 'material-ui/svg-icons/action/done-all'
 import MailIcon from 'material-ui/svg-icons/communication/contact-mail'
-import GroupIcon from 'material-ui/svg-icons/action/group-work'
+import ChinaIcon from 'material-ui/svg-icons/social/public'
 import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem'
 import propertyLogic from './logic/property.logic'
@@ -81,12 +81,14 @@ export class PropertyFilters extends React.Component {
     )
   }
 
+  currentFilters = filters => <div style={styles.wrapper}>{filters.map(this.renderChip, this)}</div>
+
   render () {
     const { keywords, filters, sortBy, fullScreen } = this.props
     const { setSortBy, addFilter } = this.actions
     const { searchText } = this.state
 
-    if (fullScreen) return null
+    if (fullScreen) return this.currentFilters(filters)
 
     // eslint-disable-next-line
     const w = jQuery(window).width()
@@ -120,9 +122,9 @@ export class PropertyFilters extends React.Component {
             />
             <RaisedButton
               style={styles.button}
-              label='SSO'
-              icon={<GroupIcon />}
-              onClick={() => addFilter('Keyword: SSO')}
+              label='China'
+              icon={<ChinaIcon />}
+              onClick={() => addFilter('Country: China')}
             />
           </ToolbarGroup>
           <ToolbarGroup lastChild>
@@ -156,7 +158,7 @@ export class PropertyFilters extends React.Component {
           fullWidth
         />
 
-        <div style={styles.wrapper}>{filters.map(this.renderChip, this)}</div>
+        {this.currentFilters(filters)}
       </div>
     )
   }

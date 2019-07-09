@@ -40,10 +40,6 @@ const styles = {
   ]
 })
 export class PropertyTabs extends React.Component {
-  componentWillMount () {
-
-  }
-
     filterPeriod = newPeriod => {
       const { addFilter } = this.actions
       newPeriod = `Go-Live: ${newPeriod}`
@@ -83,7 +79,7 @@ export class PropertyTabs extends React.Component {
             disabled={isLoading}
             style={fullScreen ? styles.hiddenTab : null}
           >
-            <PropertyReport />
+            {activeTab === 'report' && <PropertyReport />}
           </Tab>
         </Tabs>
       )

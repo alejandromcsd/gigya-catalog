@@ -5,6 +5,7 @@ const constants = {
     'Id',
     'ImageUrl',
     'Keywords',
+    'KickOffDate',
     'GoLiveDate',
     'Description',
     'Url',
@@ -40,15 +41,21 @@ const constants = {
     descriptionLabel: 'Implementation Description',
     technicalDetails: 'Technical Details',
     productsLabel: 'Customer Data Cloud Products',
-    referenceLabel: 'Customer authorised to use this implementation as a reference?'
+    referenceLabel: 'Customer authorised to use this implementation as a reference?',
+    otherCXProducts: 'Other SAP CX Solutions'
   },
   fields: {
     id: 'Id',
+    kickOffDate: 'KickOffDate',
     goLiveDate: 'GoLiveDate',
     customer: 'Customer',
     useIdentity: 'UseIdentity',
     useConsent: 'UseConsent',
     useProfile: 'UseProfile',
+    useCXMarketing: 'UseCXMarketing',
+    useCXCommerce: 'useCXCommerce',
+    useCXSales: 'useCXSales',
+    useCXServices: 'useCXServices',
     useAsReference: 'UseAsReference',
     tdd: 'TDDUrl',
     apiKey: 'APIKey',
@@ -65,17 +72,26 @@ const constants = {
     url: 'Url'
   },
   friendlyLabels: {
-    identityProduct: 'SAP Customer Identity',
-    consentProduct: 'SAP Customer Consent',
-    profileProduct: 'SAP Customer Profile',
+    identityProduct: 'Customer Identity',
+    consentProduct: 'Customer Consent',
+    profileProduct: 'Customer Profile',
+    marketingProduct: 'CX Marketing',
+    commerceProduct: 'CX Commerce',
+    salesProduct: 'CX Sales',
+    servicesProduct: 'CX Services',
     cdcProducts: 'CDC Products'
   },
   friendlyFilters: {
-    identityProduct: 'SAP Customer Identity: Yes',
-    consentProduct: 'SAP Customer Consent: Yes',
-    identityProductNOT: 'SAP Customer Identity: No',
-    consentProductNOT: 'SAP Customer Consent: No',
-    profileProduct: 'SAP Customer Profile: Yes'
+    identityProduct: 'Customer Identity: Yes',
+    consentProduct: 'Customer Consent: Yes',
+    profileProduct: 'Customer Profile: Yes',
+    identityProductNOT: 'Customer Identity: No',
+    consentProductNOT: 'Customer Consent: No',
+    marketingProduct: 'CX Marketing: Yes',
+    commerceProduct: 'CX Commerce: Yes',
+    salesProduct: 'CX Sales: Yes',
+    servicesProduct: 'CX Services: Yes',
+    crossPillar: 'Cross CX-pillar: Yes'
   },
   periods: {
     thisYear: 'This year',
@@ -88,7 +104,8 @@ const constants = {
   productCombos: {
     identity: 'Identity, Profile',
     consent: 'Consent, Profile',
-    all: 'All products'
+    all: 'All CDC Products',
+    crossPillar: 'Cross CX-pillar'
   }
 }
 

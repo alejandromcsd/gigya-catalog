@@ -49,7 +49,18 @@ const styles = {
     overflow: 'auto'
   },
   checkbox: {
-    marginBottom: 16
+    marginBottom: 16,
+    width: 200
+  },
+  slackCheckbox: {
+    marginTop: 16
+  },
+  dialog: {
+    width: '60%',
+    maxWidth: 'none'
+  },
+  inline: {
+    display: 'flex'
   }
 }
 
@@ -85,13 +96,19 @@ export default class PropertyEdit extends React.Component {
   constructor () {
     super()
     this.state = {
+      withNotification: true,
       useIdentity: false,
       useConsent: false,
       useProfile: false,
+      useCXMarketing: false,
+      useCXCommerce: false,
+      useCXSales: false,
+      useCXServices: false,
       useAsReference: false,
       implementation: '',
       url: '',
       customer: '',
+      kickOffDate: new Date(),
       goLiveDate: new Date(),
       created: '',
       lastModified: '',
@@ -121,7 +138,8 @@ export default class PropertyEdit extends React.Component {
         implementationError: '',
         customerError: '',
         keywordsError: '',
-        imageError: ''
+        imageError: '',
+        kickOffError: ''
       }
     }
   }
@@ -131,11 +149,16 @@ export default class PropertyEdit extends React.Component {
       this.setState({
         useIdentity: propertyOnEdit[constants.fields.useIdentity] || false,
         useConsent: propertyOnEdit[constants.fields.useConsent] || false,
-        useProfile: propertyOnEdit[constants.fields.useProfile] || false,
+        useProfile: propertyOnEdit[constants.fields.useProfile] || true,
+        useCXMarketing: propertyOnEdit[constants.fields.useCXMarketing] || false,
+        useCXCommerce: propertyOnEdit[constants.fields.useCXCommerce] || false,
+        useCXSales: propertyOnEdit[constants.fields.useCXSales] || false,
+        useCXServices: propertyOnEdit[constants.fields.useCXServices] || false,
         useAsReference: propertyOnEdit[constants.fields.useAsReference] || false,
         implementation: propertyOnEdit['Implementation'],
         url: propertyOnEdit['Url'],
         customer: propertyOnEdit['Customer'],
+        kickOffDate: new Date(propertyOnEdit['KickOffDate'] || new Date()),
         goLiveDate: new Date(propertyOnEdit['GoLiveDate']),
         created: propertyOnEdit['Created'] ? new Date(propertyOnEdit['Created']) : '',
         createdBy: propertyOnEdit['CreatedBy'] || '',
@@ -145,7 +168,7 @@ export default class PropertyEdit extends React.Component {
         am: propertyOnEdit['AM'],
         ic: propertyOnEdit['IC'],
         tc: propertyOnEdit['TC'],
-        ta: propertyOnEdit['TA'],
+        ta: propertyOnEdit['TA'] || '',
         country: propertyOnEdit['Country'],
         platform: propertyOnEdit['Platform'],
         category: propertyOnEdit['Category'],
@@ -164,7 +187,8 @@ export default class PropertyEdit extends React.Component {
           implementationError: '',
           customerError: '',
           keywordsError: '',
-          imageError: ''
+          imageError: '',
+          kickOffError: ''
         }
       })
     }
@@ -191,9 +215,14 @@ export default class PropertyEdit extends React.Component {
       useIdentity,
       useConsent,
       useProfile,
+      useCXMarketing,
+      useCXCommerce,
+      useCXSales,
+      useCXServices,
       useAsReference,
       implementation,
       url,
+      kickOffDate,
       goLiveDate,
       created,
       createdBy,
@@ -215,7 +244,8 @@ export default class PropertyEdit extends React.Component {
       overridingNativeBrowser,
       description,
       keywords,
-      otherKeywords
+      otherKeywords,
+      withNotification
     } = this.state
 
     const { currentUser } = this.props
@@ -225,11 +255,12 @@ export default class PropertyEdit extends React.Component {
       implementationError: implementation ? '' : 'This field is required',
       customerError: customer ? '' : 'This field is required',
       keywordsError: keywords && keywords.length ? '' : 'Please select one or more keywords',
-      imageError: this.props.uploadedImageUrl || this.props.propertyOnEdit.ImageUrl ? '' : 'Please upload a screenshot of the implementation'
+      imageError: this.props.uploadedImageUrl || this.props.propertyOnEdit.ImageUrl ? '' : 'Please upload a screenshot of the implementation',
+      kickOffError: kickOffDate < goLiveDate ? '' : 'Please check Kick-off and Go-Live dates'
     }})
 
     if (!implementation || !customer || !keywords || !keywords.length ||
-      (!this.props.uploadedImageUrl && !this.props.propertyOnEdit.ImageUrl)) return
+      (!this.props.uploadedImageUrl && !this.props.propertyOnEdit.ImageUrl) || (kickOffDate >= goLiveDate)) return
 
     const isUpdate = !!this.props.propertyOnEdit['Id']
     const createdDate = isUpdate ? created : new Date()
@@ -239,11 +270,16 @@ export default class PropertyEdit extends React.Component {
       [constants.fields.useIdentity]: useIdentity || false,
       [constants.fields.useConsent]: useConsent || false,
       [constants.fields.useProfile]: useProfile || false,
+      [constants.fields.useCXMarketing]: useCXMarketing || false,
+      [constants.fields.useCXCommerce]: useCXCommerce || false,
+      [constants.fields.useCXSales]: useCXSales || false,
+      [constants.fields.useCXServices]: useCXServices || false,
       [constants.fields.useAsReference]: useAsReference || false,
       [constants.fields.implementation]: implementation,
       [constants.fields.url]: this.ensureHTTPS(url),
       [constants.fields.customer]: customer,
       [constants.fields.imageUrl]: this.props.uploadedImageUrl || this.props.propertyOnEdit.ImageUrl,
+      'KickOffDate': kickOffDate ? kickOffDate.toDateString() : '',
       'GoLiveDate': goLiveDate ? goLiveDate.toDateString() : '',
       'Created': createdDate ? createdDate.toDateString() : '',
       'LastModified': new Date().toDateString(),
@@ -271,13 +307,14 @@ export default class PropertyEdit extends React.Component {
         ...keywords,
         ...(otherKeywords.length ? otherKeywords.split(',').map(v => v.trim()) : [])
       ]
-    }, isUpdate)
+    }, isUpdate, withNotification)
 
     this.setState({ errors: {
       implementationError: '',
       customerError: '',
       keywordsError: '',
-      imageError: ''
+      imageError: '',
+      kickOffError: ''
     }})
   }
 
@@ -302,9 +339,14 @@ export default class PropertyEdit extends React.Component {
       useIdentity,
       useConsent,
       useProfile,
+      useCXMarketing,
+      useCXCommerce,
+      useCXSales,
+      useCXServices,
       useAsReference,
       implementation,
       url,
+      kickOffDate,
       goLiveDate,
       am,
       ic,
@@ -323,7 +365,8 @@ export default class PropertyEdit extends React.Component {
       overridingNativeBrowser,
       description,
       keywords,
-      otherKeywords
+      otherKeywords,
+      withNotification
     } = this.state
 
     if (!propertyOnEdit) return null
@@ -341,7 +384,8 @@ export default class PropertyEdit extends React.Component {
       />
     ]
 
-    const imageButtonLabel = this.props.propertyOnEdit['Id'] ? 'Replace' : '(REQUIRED) Add'
+    const isUpdate = !!this.props.propertyOnEdit['Id']
+    const imageButtonLabel = isUpdate ? 'Replace' : '(REQUIRED) Add'
 
     return (
       <div>
@@ -349,6 +393,7 @@ export default class PropertyEdit extends React.Component {
           title='Edit Property'
           modal={false}
           actions={actions}
+          contentStyle={styles.dialog}
           titleStyle={styles.dialogTitle}
           autoScrollBodyContent
           open={!!propertyOnEdit}
@@ -375,23 +420,53 @@ export default class PropertyEdit extends React.Component {
           {this.state.errors.imageError && <p><span style={{color: '#ff0000'}}>{this.state.errors.imageError}</span></p>}
 
           <label style={styles.label}>{constants.labels.productsLabel}</label>
-          <Checkbox
-            label='Identity'
-            checked={useIdentity}
-            onCheck={e => this.setState({ useIdentity: !this.state.useIdentity })}
-            style={styles.checkbox}
-          />
-          <Checkbox
-            label='Consent'
-            checked={useConsent}
-            onCheck={e => this.setState({ useConsent: !this.state.useConsent })}
-            style={styles.checkbox}
-          />
-          <Checkbox
-            label='Profile'
-            checked={useProfile}
-            onCheck={e => this.setState({ useProfile: !this.state.useProfile })}
-          />
+          <div style={styles.inline}>
+            <Checkbox
+              label='Customer Identity'
+              checked={useIdentity}
+              onCheck={e => this.setState({ useIdentity: !this.state.useIdentity })}
+              style={styles.checkbox}
+            />
+            <Checkbox
+              label='Customer Consent'
+              checked={useConsent}
+              onCheck={e => this.setState({ useConsent: !this.state.useConsent })}
+              style={styles.checkbox}
+            />
+            <Checkbox
+              label='Customer Profile'
+              checked={useProfile}
+              style={styles.checkbox}
+              onCheck={e => this.setState({ useProfile: !this.state.useProfile })}
+            />
+          </div>
+          <label style={styles.label}>{constants.labels.otherCXProducts}</label>
+          <div style={styles.inline}>
+            <Checkbox
+              label={constants.friendlyLabels.marketingProduct}
+              checked={useCXMarketing}
+              onCheck={e => this.setState({ useCXMarketing: !this.state.useCXMarketing })}
+              style={styles.checkbox}
+            />
+            <Checkbox
+              label={constants.friendlyLabels.commerceProduct}
+              checked={useCXCommerce}
+              onCheck={e => this.setState({ useCXCommerce: !this.state.useCXCommerce })}
+              style={styles.checkbox}
+            />
+            <Checkbox
+              label={constants.friendlyLabels.salesProduct}
+              checked={useCXSales}
+              onCheck={e => this.setState({ useCXSales: !this.state.useCXSales })}
+              style={styles.checkbox}
+            />
+            <Checkbox
+              label={constants.friendlyLabels.servicesProduct}
+              checked={useCXServices}
+              onCheck={e => this.setState({ useCXServices: !this.state.useCXServices })}
+              style={styles.checkbox}
+            />
+          </div>
           <label style={styles.label}>{constants.labels.referenceLabel}</label>
           <Checkbox
             label='Only tick if you have received customer consent to use as reference material'
@@ -440,12 +515,32 @@ export default class PropertyEdit extends React.Component {
             fullWidth
           />
           <DatePicker
+            hintText='Kick-off date'
+            floatingLabelText='Kick-off date'
+            value={kickOffDate}
+            onChange={(_, kickOffDate) => this.setState({
+              kickOffDate,
+              errors: {kickOffError: kickOffDate < this.state.goLiveDate ? '' : 'Please check Kick-off and Go-Live dates'}
+            })}
+            mode='landscape'
+            okLabel='Set Kick-off date'
+            errorText={this.state.errors.kickOffError}
+            floatingLabelStyle={styles.floatingLabelStyle}
+            floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
+            ref={(input) => { this.datePickerKickOff = input }}
+            fullWidth
+          />
+          <DatePicker
             hintText='Go Live date'
             floatingLabelText='Go Live date'
             value={goLiveDate}
-            onChange={(_, goLiveDate) => this.setState({ goLiveDate })}
+            onChange={(_, goLiveDate) => this.setState({
+              goLiveDate,
+              errors: {kickOffError: goLiveDate > this.state.kickOffDate ? '' : 'Please check Kick-off and Go-Live dates'}
+            })}
             mode='landscape'
             okLabel='Set Go Live date'
+            errorText={this.state.errors.kickOffError}
             floatingLabelStyle={styles.floatingLabelStyle}
             floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
             ref={(input) => { this.datePickerGoLive = input }}
@@ -673,6 +768,12 @@ export default class PropertyEdit extends React.Component {
             floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
             fullWidth
           />
+          {!isUpdate && <Checkbox
+            label='Send notification to #customer-data-cloud Slack channel'
+            checked={withNotification}
+            style={styles.slackCheckbox}
+            onCheck={e => this.setState({ withNotification: !this.state.withNotification })}
+          />}
         </Dialog>
       </div>
     )

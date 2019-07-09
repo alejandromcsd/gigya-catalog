@@ -20,7 +20,7 @@ export default kea({
     removeFilter: (filter) => ({ filter }),
     setFetchError: (message) => ({ message }),
     setPropertyOnEdit: (property) => ({ property }),
-    submitPropertyEdit: (property, isUpdate) => ({ property, isUpdate }),
+    submitPropertyEdit: (property, isUpdate, withNotification) => ({ property, isUpdate, withNotification }),
     toggleDialog: () => ({}),
     selectProperty: (property) => ({ property }),
     uploadImage: (image) => ({ image }),
@@ -116,7 +116,11 @@ export default kea({
             [constants.friendlyFilters.consentProduct]: `${constants.fields.useConsent}: true`,
             [constants.friendlyFilters.identityProductNOT]: `${constants.fields.useIdentity}: false`,
             [constants.friendlyFilters.consentProductNOT]: `${constants.fields.useConsent}: false`,
-            [constants.friendlyFilters.profileProduct]: `${constants.fields.useProfile}: true`
+            [constants.friendlyFilters.profileProduct]: `${constants.fields.useProfile}: true`,
+            [constants.friendlyFilters.marketingProduct]: `${constants.fields.useCXMarketing}: true`,
+            [constants.friendlyFilters.commerceProduct]: `${constants.fields.useCXCommerce}: true`,
+            [constants.friendlyFilters.salesProduct]: `${constants.fields.useCXSales}: true`,
+            [constants.friendlyFilters.servicesProduct]: `${constants.fields.useCXServices}: true`
           })[rawKey] || rawKey
 
           filter = unfriendlyKeys(filter)
@@ -125,6 +129,12 @@ export default kea({
           // actual filter happens here: look into keywords > field values
           return propertyItem['Keywords'].some(k => k.toLowerCase().includes(removeCategory(filter).toLowerCase())) ||
           (filter.startsWith('Go-Live') && isMatchGoLiveDate(propertyItem[constants.fields.goLiveDate], filter)) ||
+          (filter.startsWith(constants.productCombos.crossPillar) && (
+            propertyItem[constants.fields.useCXMarketing] ||
+            propertyItem[constants.fields.useCXCommerce] ||
+            propertyItem[constants.fields.useCXSales] ||
+            propertyItem[constants.fields.useCXServices]
+          )) ||
             Object.keys(propertyItem).some((key) =>
               !constants.skipAttributes.includes(key) &&
               key === filterCategory &&
@@ -155,7 +165,11 @@ export default kea({
           const friendlyKeys = (rawKey) => ({
             [constants.fields.useIdentity]: constants.friendlyLabels.identityProduct,
             [constants.fields.useConsent]: constants.friendlyLabels.consentProduct,
-            [constants.fields.useProfile]: constants.friendlyLabels.profileProduct
+            [constants.fields.useProfile]: constants.friendlyLabels.profileProduct,
+            [constants.fields.useCXMarketing]: constants.friendlyLabels.marketingProduct,
+            [constants.fields.useCXCommerce]: constants.friendlyLabels.commerceProduct,
+            [constants.fields.useCXSales]: constants.friendlyLabels.salesProduct,
+            [constants.fields.useCXServices]: constants.friendlyLabels.servicesProduct
           })[rawKey] || rawKey
 
           const keyVal = `${friendlyKeys(key)}: ${item[key] === true ? 'Yes' : item[key]}`
@@ -281,12 +295,12 @@ export default kea({
 
     * fireEdit (action) {
       const { selectProperty } = this.actions
-      const { property, isUpdate } = action.payload
+      const { property, isUpdate, withNotification } = action.payload
 
       yield fire.database().ref(`/properties/${property.Id}`).update(property, err => console.log(err))
 
       // Send notification via API
-      if (property && !isUpdate) {
+      if (property && !isUpdate && withNotification) {
         const msg = {
           text: [
             {

@@ -31,7 +31,7 @@ export default class Totals extends React.Component {
     const { searchResults, filters } = this.props
     return (
       <div>
-        <h3 style={styles.header}>Total Go-Lives</h3>
+        <h3 style={styles.header}>Go-Lives: Total</h3>
         <h1 style={styles.amount}>
           {searchResults.length}
         </h1>

@@ -183,15 +183,18 @@ export class PropertyDetails extends React.Component {
     const modified = `Last Modified: ${selectedProperty['LastModified']}
       (<a href='mailto:${selectedProperty['LastModifiedByEmail']}'>${selectedProperty['LastModifiedBy']}</a>) |`
 
+    const renderSubLabel = (label, field) => field ? `${label}: ${field} |` : ''
+
     const subtitle = `
-      AM: ${selectedProperty['AM']} |
-      IC: ${selectedProperty['IC']} |
-      TC: ${selectedProperty['TC']} |
-      TA: ${selectedProperty['TA']} |
-      Go Live: ${selectedProperty['GoLiveDate']} |
-      Platform: ${selectedProperty['Platform']} |
-      Country: ${selectedProperty['Country']} |
-      Category: ${selectedProperty['Category']} |
+      ${renderSubLabel('AM', selectedProperty['AM'])}
+      ${renderSubLabel('IC', selectedProperty['IC'])}
+      ${renderSubLabel('TC', selectedProperty['TC'])}
+      ${renderSubLabel('TA', selectedProperty['TA'])}
+      ${renderSubLabel('Kick-off', selectedProperty['KickOffDate'])}
+      ${renderSubLabel('Go Live', selectedProperty['GoLiveDate'])}
+      ${renderSubLabel('Platform', selectedProperty['Platform'])}
+      ${renderSubLabel('Country', selectedProperty['Country'])}
+      ${renderSubLabel('Category', selectedProperty['Category'])}
       ${selectedProperty['Created'] ? created : ''} ${selectedProperty['LastModified'] ? modified : ''}
     `
 
@@ -243,19 +246,19 @@ export class PropertyDetails extends React.Component {
                     <Subheader>SAP Customer Data Cloud Products</Subheader>
                     {selectedProperty[constants.fields.useIdentity] &&
                     <ListItem
-                      primaryText='SAP Customer Identity'
+                      primaryText='Customer Identity'
                       disabled
                     />
                     }
                     {selectedProperty[constants.fields.useConsent] &&
                     <ListItem
-                      primaryText='SAP Customer Consent'
+                      primaryText='Customer Consent'
                       disabled
                     />
                     }
                     {selectedProperty[constants.fields.useProfile] &&
                     <ListItem
-                      primaryText='SAP Customer Profile'
+                      primaryText='Customer Profile'
                       disabled
                     />
                     }
@@ -263,15 +266,36 @@ export class PropertyDetails extends React.Component {
                 </MobileTearSheet>
                 <MobileTearSheet>
                   <List>
-                    <Subheader>Other SAP CX Solutions</Subheader>
+                    <Subheader>{constants.labels.otherCXProducts}</Subheader>
+                    {(!selectedProperty[constants.fields.useCXMarketing] &&
+                      !selectedProperty[constants.fields.useCXCommerce] &&
+                      !selectedProperty[constants.fields.useCXSales] &&
+                      !selectedProperty[constants.fields.useCXServices]) &&
+                      <ListItem
+                        primaryText='None'
+                        disabled
+                      />
+                    }
+                    {selectedProperty[constants.fields.useCXMarketing] &&
                     <ListItem
-                      primaryText='None'
+                      primaryText={constants.friendlyLabels.marketingProduct}
                       disabled
-                    />
-                    {/* <ListItem
-                      primaryText='Show your status'
+                    />}
+                    {selectedProperty[constants.fields.useCXCommerce] &&
+                    <ListItem
+                      primaryText={constants.friendlyLabels.commerceProduct}
                       disabled
-                    /> */}
+                    />}
+                    {selectedProperty[constants.fields.useCXSales] &&
+                    <ListItem
+                      primaryText={constants.friendlyLabels.salesProduct}
+                      disabled
+                    />}
+                    {selectedProperty[constants.fields.useCXServices] &&
+                    <ListItem
+                      primaryText={constants.friendlyLabels.servicesProduct}
+                      disabled
+                    />}
                   </List>
                 </MobileTearSheet>
               </div>

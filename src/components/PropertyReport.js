@@ -30,8 +30,16 @@ const styles = {
   bodyContainer: {
     display: 'flex',
     flexWrap: 'wrap',
-    margin: 40,
+    marginRight: 40,
+    marginTop: 15,
+    marginBottom: 15,
     marginLeft: 280
+  },
+  leftContainer: {
+    width: '75%'
+  },
+  rightContainer: {
+    width: '25%'
   },
   middleContainer: {
     marginLeft: 280,
@@ -39,12 +47,6 @@ const styles = {
   },
   expandedContainer: {
     marginLeft: 100
-  },
-  leftContainer: {
-    width: '75%'
-  },
-  rightContainer: {
-    width: '25%'
   },
   fixedHeightCell: {
     height: 240,
@@ -61,12 +63,12 @@ const styles = {
   drawerOpen: {
     width: 240,
     position: 'absolute',
-    minHeight: 700
+    minHeight: 800
   },
   drawerClosed: {
     width: 60,
     position: 'absolute',
-    minHeight: 700
+    minHeight: 800
   },
   progress: {
     margin: 'auto',
@@ -95,16 +97,6 @@ const styles = {
   ]
 })
 export class PropertyReport extends React.Component {
-  getCols (resultsCount) {
-    // eslint-disable-next-line
-    var w = jQuery(window).width()
-
-    if (resultsCount > 3 && w >= 1200) return 4
-    if (resultsCount > 2 && w >= 1024) return 3
-    if (resultsCount > 1 && w >= 768) return 2
-    return 1
-  }
-
   render () {
     const { searchResults, isLoading, error, reportDrawer } = this.props
     const { toggleReportDrawer } = this.actions
@@ -122,7 +114,7 @@ export class PropertyReport extends React.Component {
         ) : (
           <div>
             <Drawer
-              containerStyle={reportDrawer ? styles.drawerOpen : styles.drawerClosed}
+              // containerStyle={reportDrawer ? styles.drawerOpen : styles.drawerClosed}
               open
             >
               <div style={styles.toolbarIcon}>

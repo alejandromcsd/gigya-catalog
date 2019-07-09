@@ -8,7 +8,10 @@ export default kea({
     toggleColumnIC: () => ({}),
     toggleColumnTC: () => ({}),
     toggleColumnTA: () => ({}),
-    toggleColumnCDCProducts: () => ({})
+    toggleColumnCDCProducts: () => ({}),
+    toggleColumnOtherCXProducts: () => ({}),
+    toggleColumnKickOffDate: () => ({}),
+    changeGraph: (graphType) => ({ graphType })
   }),
 
   reducers: ({ actions }) => ({
@@ -27,8 +30,17 @@ export default kea({
     isColumnTAVisible: [false, PropTypes.bool, {
       [actions.toggleColumnTA]: (state) => !state
     }],
+    isColumnKickOffDateVisible: [false, PropTypes.bool, {
+      [actions.toggleColumnKickOffDate]: (state) => !state
+    }],
     isCDCProductsVisible: [false, PropTypes.bool, {
       [actions.toggleColumnCDCProducts]: (state) => !state
+    }],
+    isOtherCXProductsVisible: [false, PropTypes.bool, {
+      [actions.toggleColumnOtherCXProducts]: (state) => !state
+    }],
+    currentGraph: ['duration', PropTypes.string, {
+      [actions.changeGraph]: (_, payload) => payload.graphType
     }]
   })
 })

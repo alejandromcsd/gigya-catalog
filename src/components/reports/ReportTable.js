@@ -29,20 +29,41 @@ const styles = {
       'isColumnICVisible',
       'isColumnTCVisible',
       'isColumnTAVisible',
-      'isCDCProductsVisible'
+      'isColumnKickOffDateVisible',
+      'isCDCProductsVisible',
+      'isOtherCXProductsVisible'
     ]
   ]
 })
 export class ReportTable extends React.Component {
-  showProperty = (tile) => {
+  showProperty = tile => {
     this.props.history.push(`/${tile['Id']}`)
   }
 
+  getOtherCXCellValue = tile => {
+    let products = []
+    if (tile[constants.fields.useCXMarketing]) products.push(constants.friendlyLabels.marketingProduct)
+    if (tile[constants.fields.useCXCommerce]) products.push(constants.friendlyLabels.commerceProduct)
+    if (tile[constants.fields.useCXSales]) products.push(constants.friendlyLabels.salesProduct)
+    if (tile[constants.fields.useCXServices]) products.push(constants.friendlyLabels.servicesProduct)
+
+    return products.join(', ')
+  }
+
   render () {
-    const { searchResults, isColumnAMVisible, isColumnICVisible, isColumnTCVisible, isColumnTAVisible, isCDCProductsVisible } = this.props
+    const {
+      searchResults,
+      isColumnAMVisible,
+      isColumnICVisible,
+      isColumnTCVisible,
+      isColumnTAVisible,
+      isColumnKickOffDateVisible,
+      isCDCProductsVisible,
+      isOtherCXProductsVisible
+    } = this.props
     return (
       <div>
-        <h3 style={styles.header}>Go-Lives</h3>
+        <h3 style={styles.header}>Go-Lives: List</h3>
         <Table
           selectable
           onRowSelection={selectedRow => selectedRow.length ? this.showProperty(searchResults[selectedRow[0]]) : null}
@@ -52,6 +73,7 @@ export class ReportTable extends React.Component {
             adjustForCheckbox={false}
           >
             <TableRow>
+              {isColumnKickOffDateVisible && <TableHeaderColumn>Kick-off</TableHeaderColumn>}
               <TableHeaderColumn>Go Live</TableHeaderColumn>
               <TableHeaderColumn>Customer</TableHeaderColumn>
               <TableHeaderColumn>Implementation</TableHeaderColumn>
@@ -62,6 +84,7 @@ export class ReportTable extends React.Component {
               {isColumnTCVisible && <TableHeaderColumn>TC</TableHeaderColumn>}
               {isColumnTAVisible && <TableHeaderColumn>TA</TableHeaderColumn>}
               {isCDCProductsVisible && <TableHeaderColumn>{constants.friendlyLabels.cdcProducts}</TableHeaderColumn>}
+              {isOtherCXProductsVisible && <TableHeaderColumn>{constants.labels.otherCXProducts}</TableHeaderColumn>}
             </TableRow>
           </TableHeader>
           <TableBody displayRowCheckbox={false}>
@@ -70,6 +93,7 @@ export class ReportTable extends React.Component {
                 selectable
                 key={tile['Id']}
               >
+                {isColumnKickOffDateVisible && <TableRowColumn>{tile['KickOffDate']}</TableRowColumn>}
                 <TableRowColumn>{tile['GoLiveDate']}</TableRowColumn>
                 <TableRowColumn>{tile['Customer']}</TableRowColumn>
                 <TableRowColumn>{tile['Implementation']}</TableRowColumn>
@@ -83,6 +107,7 @@ export class ReportTable extends React.Component {
                   <TableRowColumn>
                     {`${tile[constants.fields.useIdentity] ? 'Identity,' : ''} ${tile[constants.fields.useConsent] ? 'Consent,' : ''} Profile`}
                   </TableRowColumn>}
+                {isOtherCXProductsVisible && <TableRowColumn>{this.getOtherCXCellValue(tile)}</TableRowColumn>}
               </TableRow>
             ))}
           </TableBody>
