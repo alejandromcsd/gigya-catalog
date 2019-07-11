@@ -57,16 +57,18 @@ export default class ReportColumns extends React.Component {
       } = this.actions
 
       return (
-        <Menu desktop>
-          <Subheader>{reportDrawer && 'Additional columns'}</Subheader>
-          <MenuItem primaryText='AM' checked={isColumnAMVisible} onClick={toggleColumnAM} />
-          <MenuItem primaryText='IC' checked={isColumnICVisible} onClick={toggleColumnIC} />
-          <MenuItem primaryText='TC' checked={isColumnTCVisible} onClick={toggleColumnTC} />
-          <MenuItem primaryText='TA' checked={isColumnTAVisible} onClick={toggleColumnTA} />
-          <MenuItem primaryText='Kick-off date' checked={isColumnKickOffDateVisible} onClick={toggleColumnKickOffDate} />
-          <MenuItem primaryText={constants.friendlyLabels.cdcProducts} checked={isCDCProductsVisible} onClick={toggleColumnCDCProducts} />
-          <MenuItem primaryText='CX Solutions' checked={isOtherCXProductsVisible} onClick={toggleColumnOtherCXProducts} />
-        </Menu>
+        <div>
+          {reportDrawer && (<Menu desktop>
+            <Subheader>Additional columns</Subheader>
+            <MenuItem primaryText='Account Manager' checked={isColumnAMVisible} onClick={toggleColumnAM} />
+            <MenuItem primaryText='Implementation Consultant' checked={isColumnICVisible} onClick={toggleColumnIC} />
+            <MenuItem primaryText='Technical Consultant' checked={isColumnTCVisible} onClick={toggleColumnTC} />
+            <MenuItem primaryText='Technical Architect' checked={isColumnTAVisible} onClick={toggleColumnTA} />
+            <MenuItem primaryText='Kick-off date' checked={isColumnKickOffDateVisible} onClick={toggleColumnKickOffDate} />
+            <MenuItem primaryText={constants.friendlyLabels.cdcProducts} checked={isCDCProductsVisible} onClick={toggleColumnCDCProducts} />
+            <MenuItem primaryText='Other CX Solutions' checked={isOtherCXProductsVisible} onClick={toggleColumnOtherCXProducts} />
+          </Menu>)}
+        </div>
       )
     }
 }

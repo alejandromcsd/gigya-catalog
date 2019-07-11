@@ -8,13 +8,18 @@ import Login from './Login'
 import PropertyEdit from './PropertyEdit'
 import LoadMore from './LoadMore'
 import propertyLogic from './logic/property.logic'
+import reportLogic from './logic/report.logic'
 
 @connect({
   props: [
     propertyLogic, [
       'isLoading',
       'searchResults',
-      'isOpen'
+      'isOpen',
+      'activeTab'
+    ],
+    reportLogic, [
+      'reportDrawer'
     ]
   ],
   actions: [
@@ -37,8 +42,13 @@ export class PropertyContainer extends React.Component {
   }
 
   render () {
+    const {activeTab, reportDrawer} = this.props
+    let drawerOpenStyle = {}
+    if (activeTab === 'report' && reportDrawer) drawerOpenStyle = {marginLeft: 245}
+    if (activeTab === 'report' && !reportDrawer) drawerOpenStyle = {marginLeft: 64}
+
     return (
-      <div>
+      <div style={drawerOpenStyle}>
         <Header />
         <PropertyFilters />
         <PropertyTabs />

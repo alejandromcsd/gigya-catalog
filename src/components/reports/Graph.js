@@ -27,8 +27,8 @@ const styles = {
   },
   iconButton: {
     position: 'absolute',
-    marginLeft: 246,
-    top: 48,
+    marginLeft: 249,
+    top: 31,
     width: 20,
     height: 20,
     padding: 0
@@ -62,6 +62,7 @@ const styles = {
 }
 
 const colors = scaleOrdinal(schemeCategory10).range()
+const colorsBlue = ['#172533', '#35495F', '#4a6684', '#849ab2']
 
 @connect({
   props: [
@@ -160,7 +161,7 @@ export default class Graph extends React.Component {
               }}
               layout='vertical'
             >
-              <XAxis tick={{fontSize: 12}} allowDecimals={false} type='number' />
+              <XAxis tick={{fontSize: 12}} domain={['auto', 'dataMax + 1']} allowDecimals={false} type='number' />
               <YAxis tick={{fontSize: 13}} dataKey='name' type='category' width={180} />
               <Tooltip />
               <CartesianGrid horizontal={false} />
@@ -168,7 +169,7 @@ export default class Graph extends React.Component {
                 <LabelList position='right' dataKey='pct' />
                 {
                   data.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={colors[index % 10]} />
+                    <Cell key={`cell-${index}`} fill={colorsBlue[index]} />
                   ))
                 }
               </Bar>

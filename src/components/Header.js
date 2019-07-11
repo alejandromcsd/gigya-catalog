@@ -47,7 +47,7 @@ export default class Header extends React.Component {
       'Url': '',
       'Customer': '',
       'ImageUrl': '',
-      'KickOffDate': new Date(),
+      'KickOffDate': null,
       'GoLiveDate': new Date(),
       'AM': '',
       'IC': '',
@@ -57,6 +57,7 @@ export default class Header extends React.Component {
       'Platform': '',
       'Category': '',
       'Description': '',
+      'TechnicalDescription': '',
       'Keywords': []
     })
   }

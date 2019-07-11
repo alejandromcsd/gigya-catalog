@@ -36,7 +36,7 @@ export default class Totals extends React.Component {
           {searchResults.length}
         </h1>
         <h4 style={styles.subtitle}>
-        with {filters.join(' and ')}
+          {filters.length ? `with ${filters.join(' and ')}` : ''}
         </h4>
       </div>
     )

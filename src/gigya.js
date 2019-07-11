@@ -46,7 +46,6 @@ export function sendNotification (msg) {
     fields:"profile.email",
     callback: (response) => {
       if(response.errorCode == 0) {
-        // Get Firebase JWT
         fetch('https://api-catalog.cfapps.us10.hana.ondemand.com/notification/send', {
           method: 'post',
           headers: new Headers({
@@ -60,6 +59,37 @@ export function sendNotification (msg) {
         }))
         .catch(function(error) {
           console.log(`${new Date().toTimeString()} - Error sending notification`);
+          console.error(error);
+        })
+      } else {
+        console.log(`${new Date().toTimeString()} - Error requesting a Gigya JWT: ${response.errorMessage}`);
+      }
+    }
+  })
+}
+
+export function sendEmail (address, customer, implementation) {
+  gigya.accounts.getJWT({
+    fields:"profile.email",
+    callback: (response) => {
+      if(response.errorCode == 0) {
+        fetch('https://api-catalog.cfapps.us10.hana.ondemand.com/email/send', {
+          method: 'post',
+          headers: new Headers({
+            'Authorization': `Bearer ${response.id_token}`,
+            'Content-Type': 'application/json',
+          }),
+          body: JSON.stringify({
+            address,
+            customer,
+            implementation
+          }),
+        })
+        .then(response => response.text()
+          .then((text) => {
+        }))
+        .catch(function(error) {
+          console.log(`${new Date().toTimeString()} - Error sending email`);
           console.error(error);
         })
       } else {

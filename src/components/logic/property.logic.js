@@ -29,6 +29,7 @@ export default kea({
     showAll: (resultsCount) => ({ resultsCount }),
     setSortBy: (sortField) => ({ sortField }),
     toggleFullScreen: () => ({}),
+    toggleSendEmail: () => ({}),
     changeTab: (activeTab, resultsCount) => ({ activeTab, resultsCount })
   }),
 
@@ -99,6 +100,9 @@ export default kea({
     }],
     fullScreen: [false, PropTypes.bool, {
       [actions.toggleFullScreen]: (state) => !state
+    }],
+    isSendEmail: [false, PropTypes.bool, {
+      [actions.toggleSendEmail]: (state) => !state
     }],
     activeTab: ['grid', PropTypes.string, {
       [actions.changeTab]: (_, payload) => payload.activeTab

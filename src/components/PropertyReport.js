@@ -24,8 +24,7 @@ const styles = {
   },
   content: {
     flexGrow: 1,
-    height: '100vh',
-    overflow: 'auto'
+    height: '100vh'
   },
   bodyContainer: {
     display: 'flex',
@@ -33,7 +32,7 @@ const styles = {
     marginRight: 40,
     marginTop: 15,
     marginBottom: 15,
-    marginLeft: 280
+    marginLeft: 40
   },
   leftContainer: {
     width: '75%'
@@ -42,11 +41,8 @@ const styles = {
     width: '25%'
   },
   middleContainer: {
-    marginLeft: 280,
+    marginLeft: 40,
     marginRight: 40
-  },
-  expandedContainer: {
-    marginLeft: 100
   },
   fixedHeightCell: {
     height: 240,
@@ -61,14 +57,10 @@ const styles = {
     padding: 15
   },
   drawerOpen: {
-    width: 240,
-    position: 'absolute',
-    minHeight: 800
+    width: 240
   },
   drawerClosed: {
-    width: 60,
-    position: 'absolute',
-    minHeight: 800
+    width: 60
   },
   progress: {
     margin: 'auto',
@@ -101,9 +93,6 @@ export class PropertyReport extends React.Component {
     const { searchResults, isLoading, error, reportDrawer } = this.props
     const { toggleReportDrawer } = this.actions
 
-    const bodyStyle = reportDrawer ? styles.bodyContainer : {...styles.bodyContainer, ...styles.expandedContainer}
-    const middleStyle = reportDrawer ? styles.middleContainer : {...styles.middleContainer, ...styles.expandedContainer}
-
     return (
       <div style={styles.root}>
         {isLoading ? (
@@ -114,7 +103,7 @@ export class PropertyReport extends React.Component {
         ) : (
           <div>
             <Drawer
-              // containerStyle={reportDrawer ? styles.drawerOpen : styles.drawerClosed}
+              containerStyle={reportDrawer ? styles.drawerOpen : styles.drawerClosed}
               open
             >
               <div style={styles.toolbarIcon}>
@@ -131,7 +120,7 @@ export class PropertyReport extends React.Component {
             </Drawer>
             {searchResults.length > 0 ? (
               <main style={styles.content}>
-                <div style={bodyStyle}>
+                <div style={styles.bodyContainer}>
                   <div style={styles.leftContainer}>
                     <Paper style={styles.fixedHeightCell}>
                       <Graph />
@@ -143,7 +132,7 @@ export class PropertyReport extends React.Component {
                     </Paper>
                   </div>
                 </div>
-                <div style={middleStyle}>
+                <div style={styles.middleContainer}>
                   <Paper style={styles.reportTable}>
                     <ReportTable />
                   </Paper>

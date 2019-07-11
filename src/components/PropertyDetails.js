@@ -13,6 +13,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 import {Card, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card'
 import LanguageIcon from 'material-ui/svg-icons/action/language'
 import ShareIcon from 'material-ui/svg-icons/social/share'
+import EmailIcon from 'material-ui/svg-icons/communication/email'
 import ReferenceIcon from 'material-ui/svg-icons/maps/local-offer'
 import DescriptionIcon from 'material-ui/svg-icons/action/description'
 import ModeEdit from 'material-ui/svg-icons/editor/mode-edit'
@@ -20,6 +21,7 @@ import ExtensionIcon from 'material-ui/svg-icons/action/extension'
 import propertyLogic from './logic/property.logic'
 import {toHTML, copyURLToClipboard} from '../utils'
 import MobileTearSheet from './MobileTearSheet'
+import SendEmail from './SendEmail'
 import constants from '../constants'
 
 const styles = {
@@ -67,8 +69,8 @@ const styles = {
     marginLeft: 25
   },
   dialog: {
-    width: '60%',
-    maxWidth: 'none'
+    width: '80%',
+    maxWidth: 1150
   },
   dialogBody: {
     backgroundColor: '#edeff0'
@@ -101,7 +103,8 @@ const styles = {
   actions: [
     propertyLogic, [
       'setPropertyOnEdit',
-      'toggleDialog'
+      'toggleDialog',
+      'toggleSendEmail'
     ]
   ]
 })
@@ -164,6 +167,14 @@ export class PropertyDetails extends React.Component {
         icon={<ShareIcon />}
         onClick={this.copyURL}
         target='_blank'
+        style={styles.button}
+      />
+      <RaisedButton
+        label='Send email'
+        labelPosition='before'
+        primary
+        icon={<EmailIcon />}
+        onClick={this.actions.toggleSendEmail}
         style={styles.button}
       />
     </div>
@@ -340,7 +351,7 @@ export class PropertyDetails extends React.Component {
                   </ListItem>
                 </List>
                 {selectedProperty[constants.fields.description] &&
-                  <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.description])}} />
+                  <div dangerouslySetInnerHTML={{__html: selectedProperty[constants.fields.description]}} />
                 }
               </div>
 
@@ -360,6 +371,9 @@ export class PropertyDetails extends React.Component {
                     <div style={styles.headerLabel}>{constants.labels.technicalDetails}</div>
                   </ListItem>
                 </List>
+                {selectedProperty[constants.fields.technicalDescription] &&
+                  <div dangerouslySetInnerHTML={{__html: selectedProperty[constants.fields.technicalDescription]}} />
+                }
 
                 {selectedProperty[constants.fields.tdd] &&
                 <div style={styles.subDetailSection}>
@@ -420,6 +434,7 @@ export class PropertyDetails extends React.Component {
             </CardText>
           </Card>
         </Dialog>
+        <SendEmail customer={selectedProperty['Customer']} implementation={selectedProperty[constants.fields.description]} />
       </div>
     )
   }
