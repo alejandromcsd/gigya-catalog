@@ -62,7 +62,7 @@ const styles = {
 }
 
 const colors = scaleOrdinal(schemeCategory10).range()
-const colorsBlue = ['#172533', '#35495F', '#4a6684', '#849ab2']
+const colorsBlue = ['#172533', '#35495F', '#4a6684', '#849ab2', '#a8b0b7']
 
 @connect({
   props: [
@@ -97,21 +97,25 @@ export default class Graph extends React.Component {
           case (diffDays < 90):
             items[0].Count++
             break
-          case (diffDays < 180):
+          case (diffDays < 175):
             items[1].Count++
             break
-          case (diffDays < 365):
+          case (diffDays < 280):
             items[2].Count++
             break
-          case (diffDays >= 365):
+          case (diffDays < 365):
             items[3].Count++
+            break
+          case (diffDays >= 365):
+            items[4].Count++
             break
         }
         return items
       }, [
         { 'Count': 0, 'name': 'less 90 days' },
-        { 'Count': 0, 'name': 'less 180 days' },
-        { 'Count': 0, 'name': 'less 395 days' },
+        { 'Count': 0, 'name': 'less 175 days (25w)' },
+        { 'Count': 0, 'name': 'less 280 days (40w)' },
+        { 'Count': 0, 'name': 'less 395 days (52w)' },
         { 'Count': 0, 'name': 'over 1 year' }
       ]).map((e, _, results) => {
         return {...e, pct: `${e.Count ? Math.round((e.Count * 100) / results.reduce((c, i) => i.Count + c, 0)) : 0}%`}
@@ -162,7 +166,7 @@ export default class Graph extends React.Component {
               layout='vertical'
             >
               <XAxis tick={{fontSize: 12}} domain={['auto', 'dataMax + 1']} allowDecimals={false} type='number' />
-              <YAxis tick={{fontSize: 13}} dataKey='name' type='category' width={180} />
+              <YAxis interval={0} tick={{fontSize: 12}} dataKey='name' type='category' width={180} />
               <Tooltip />
               <CartesianGrid horizontal={false} />
               <Bar isAnimationActive={false} dataKey='Count' fill='#ff7300'>

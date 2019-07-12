@@ -131,7 +131,8 @@ export default kea({
           const filterCategory = removeCategoryValue(filter)
 
           // actual filter happens here: look into keywords > field values
-          return propertyItem['Keywords'].some(k => k.toLowerCase().includes(removeCategory(filter).toLowerCase())) ||
+          return ((!filterCategory || filterCategory === 'Keyword') &&
+            propertyItem['Keywords'].some(k => k.toLowerCase().includes(removeCategory(filter).toLowerCase()))) ||
           (filter.startsWith('Go-Live') && isMatchGoLiveDate(propertyItem[constants.fields.goLiveDate], filter)) ||
           (filter.startsWith(constants.productCombos.crossPillar) && (
             propertyItem[constants.fields.useCXMarketing] ||
@@ -207,6 +208,9 @@ export default kea({
     ],
     countryList: [
       () => [selectors.properties], (p) => reduceToList(p, 'Country'), PropTypes.array
+    ],
+    regionList: [
+      () => [], () => ['EMEA', 'NA', 'APJ'], PropTypes.array
     ],
     platformList: [
       () => [selectors.properties], (p) => reduceToList(p, 'Platform'), PropTypes.array

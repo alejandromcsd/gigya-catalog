@@ -77,6 +77,7 @@ export class ReportTable extends React.Component {
               <TableHeaderColumn>Go Live</TableHeaderColumn>
               <TableHeaderColumn>Customer</TableHeaderColumn>
               <TableHeaderColumn>Implementation</TableHeaderColumn>
+              <TableHeaderColumn>Region</TableHeaderColumn>
               <TableHeaderColumn>Country</TableHeaderColumn>
               <TableHeaderColumn>Category</TableHeaderColumn>
               {isColumnAMVisible && <TableHeaderColumn>AM</TableHeaderColumn>}
@@ -97,6 +98,7 @@ export class ReportTable extends React.Component {
                 <TableRowColumn>{tile['GoLiveDate']}</TableRowColumn>
                 <TableRowColumn>{tile['Customer']}</TableRowColumn>
                 <TableRowColumn>{tile['Implementation']}</TableRowColumn>
+                <TableRowColumn>{tile['Region']}</TableRowColumn>
                 <TableRowColumn>{tile['Country']}</TableRowColumn>
                 <TableRowColumn>{tile['Category']}</TableRowColumn>
                 {isColumnAMVisible && <TableRowColumn>{tile['AM']}</TableRowColumn>}

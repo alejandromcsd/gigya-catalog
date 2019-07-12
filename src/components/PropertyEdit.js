@@ -9,13 +9,13 @@ import {
 } from 'material-ui/Stepper'
 import WarningIcon from 'material-ui/svg-icons/alert/warning'
 import TextField from 'material-ui/TextField'
+import MenuItem from 'material-ui/MenuItem'
 import AutoComplete from 'material-ui/AutoComplete'
 import Checkbox from 'material-ui/Checkbox'
 import DatePicker from 'material-ui/DatePicker'
 import RaisedButton from 'material-ui/RaisedButton'
 import FlatButton from 'material-ui/FlatButton'
 import SelectField from 'material-ui/SelectField'
-import MenuItem from 'material-ui/MenuItem'
 import LinearProgress from 'material-ui/LinearProgress'
 import propertyLogic from './logic/property.logic'
 import {blue500, red500} from 'material-ui/styles/colors'
@@ -76,12 +76,22 @@ const styles = {
     margin: 10,
     marginLeft: 0
   },
-  editorContainer: {
-    color: '#333333'
+  region: {
+    width: '50%',
+    margin: 10,
+    marginTop: 34,
+    marginLeft: 0
+  },
+  regionLabel: {
+    color: '#354A5F',
+    fontSize: 'initial'
   },
   editorInput: {
     marginTop: 25,
     fontSize: 14
+  },
+  editorContainer: {
+    color: '#333333'
   }
 }
 
@@ -102,6 +112,7 @@ const converter = new Showdown.Converter({
       'tcList',
       'taList',
       'countryList',
+      'regionList',
       'platformList',
       'categoryList',
       'keywordsList',
@@ -149,6 +160,7 @@ export default class PropertyEdit extends React.Component {
       tc: '',
       ta: '',
       country: '',
+      region: '',
       platform: '',
       category: '',
       tddUrl: '',
@@ -166,6 +178,7 @@ export default class PropertyEdit extends React.Component {
       errors: {
         implementationError: '',
         customerError: '',
+        regionError: '',
         keywordsError: '',
         imageError: '',
         kickOffError: ''
@@ -216,6 +229,7 @@ export default class PropertyEdit extends React.Component {
         tc: propertyOnEdit['TC'],
         ta: propertyOnEdit['TA'] || '',
         country: propertyOnEdit['Country'],
+        region: propertyOnEdit['Region'] || '',
         platform: propertyOnEdit['Platform'],
         category: propertyOnEdit['Category'],
         tddUrl: propertyOnEdit[constants.fields.tdd],
@@ -235,6 +249,7 @@ export default class PropertyEdit extends React.Component {
         errors: {
           implementationError: '',
           customerError: '',
+          regionError: '',
           keywordsError: '',
           imageError: '',
           kickOffError: ''
@@ -280,18 +295,20 @@ export default class PropertyEdit extends React.Component {
   runValidations = () => {
     const {
       customer,
+      region,
       implementation,
       kickOffDate,
       goLiveDate,
       keywords
     } = this.state
 
-    const pendingErrors = (!implementation || !customer || !keywords || !keywords.length ||
+    const pendingErrors = (!implementation || !customer || !region || !keywords || !keywords.length ||
       (!this.props.uploadedImageUrl && !this.props.propertyOnEdit.ImageUrl) || (kickOffDate && (kickOffDate >= goLiveDate)))
 
     this.setState({ errors: {
       implementationError: implementation ? '' : 'This field is required',
       customerError: customer ? '' : 'This field is required',
+      regionError: region ? '' : 'This field is required',
       keywordsError: keywords && keywords.length ? '' : 'Please select one or more keywords',
       imageError: this.props.uploadedImageUrl || this.props.propertyOnEdit.ImageUrl ? '' : 'Please upload a screenshot of the implementation',
       kickOffError: !kickOffDate || (kickOffDate < goLiveDate) ? '' : 'Please check Kick-off and Go-Live dates'
@@ -324,6 +341,7 @@ export default class PropertyEdit extends React.Component {
       tc,
       ta,
       country,
+      region,
       platform,
       category,
       tddUrl,
@@ -375,6 +393,7 @@ export default class PropertyEdit extends React.Component {
       'TC': tc,
       'TA': ta,
       'Country': country,
+      'Region': region,
       'Platform': platform,
       'Category': category,
       [constants.fields.tdd]: tddUrl || '',
@@ -398,6 +417,7 @@ export default class PropertyEdit extends React.Component {
     this.setState({ errors: {
       implementationError: '',
       customerError: '',
+      regionError: '',
       keywordsError: '',
       imageError: '',
       kickOffError: ''
@@ -414,6 +434,7 @@ export default class PropertyEdit extends React.Component {
       tcList,
       taList,
       countryList,
+      regionList,
       platformList,
       categoryList,
       keywordsList,
@@ -440,6 +461,7 @@ export default class PropertyEdit extends React.Component {
       tc,
       ta,
       country,
+      region,
       platform,
       category,
       tddUrl,
@@ -651,15 +673,27 @@ export default class PropertyEdit extends React.Component {
                 fullWidth
               />
             </div>
-            <TextField
-              floatingLabelText='Website URL / App Store URL'
-              value={url}
-              onChange={e => this.setState({ url: e.target.value })}
-              floatingLabelStyle={styles.floatingLabelStyle}
-              floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
-              ref={(input) => { this.websiteURL = input }}
-              fullWidth
-            />
+            <div style={styles.inline}>
+              <TextField
+                floatingLabelText='Website URL / App Store URL'
+                value={url}
+                style={styles.inlineChild}
+                onChange={e => this.setState({ url: e.target.value })}
+                floatingLabelStyle={styles.floatingLabelStyle}
+                floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
+                ref={(input) => { this.websiteURL = input }}
+                fullWidth
+              />
+              <SelectField
+                value={region}
+                onChange={(_, i, region) => this.setState({region}, this.runValidations)}
+                labelStyle={styles.regionLabel}
+                errorText={this.state.errors.regionError}
+                style={styles.region}>
+                <MenuItem value='' primaryText='Region' />
+                {regionList.map(r => <MenuItem key={r} value={r} primaryText={r} />)}
+              </SelectField>
+            </div>
             <div style={styles.inline}>
               <DatePicker
                 hintText='Kick-off date (If applicable)'

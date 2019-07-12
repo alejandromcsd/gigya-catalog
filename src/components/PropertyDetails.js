@@ -205,6 +205,7 @@ export class PropertyDetails extends React.Component {
       ${renderSubLabel('Go Live', selectedProperty['GoLiveDate'])}
       ${renderSubLabel('Platform', selectedProperty['Platform'])}
       ${renderSubLabel('Country', selectedProperty['Country'])}
+      ${renderSubLabel('Region', selectedProperty['Region'])}
       ${renderSubLabel('Category', selectedProperty['Category'])}
       ${selectedProperty['Created'] ? created : ''} ${selectedProperty['LastModified'] ? modified : ''}
     `

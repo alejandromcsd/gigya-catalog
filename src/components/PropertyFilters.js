@@ -94,7 +94,7 @@ export class PropertyFilters extends React.Component {
     const w = jQuery(window).width()
     const filterLabel =
       w >= 1200
-        ? 'Or search by Customer, Implementation, Country, Platform, Category or Keyword'
+        ? 'Or search by Customer, Implementation, Country, Region, Platform, Category or Keyword'
         : 'Or search by...'
 
     return (

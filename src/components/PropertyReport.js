@@ -10,7 +10,7 @@ import reportLogic from './logic/report.logic'
 import ReportTable from './reports/ReportTable'
 import OffIcon from 'material-ui/svg-icons/file/cloud-off'
 import MenuIcon from 'material-ui/svg-icons/navigation/menu'
-import { MainListItems, SecondaryListItems } from './reports/MenuItems'
+import { MainListItems, SecondaryListItems, RegionListItems } from './reports/MenuItems'
 import ReportColumns from './reports/ReportColumns'
 import Totals from './reports/Totals'
 import Graph from './reports/Graph'
@@ -113,6 +113,8 @@ export class PropertyReport extends React.Component {
               </div>
               <Divider />
               <MainListItems />
+              <Divider />
+              <RegionListItems />
               <Divider />
               <SecondaryListItems />
               <Divider />

@@ -2,10 +2,16 @@ import React from 'react'
 import { connect } from 'kea'
 import Menu from 'material-ui/Menu'
 import MenuItem from 'material-ui/MenuItem'
-import Subheader from 'material-ui/Subheader'
+import {ListItem} from 'material-ui/List'
 import Checkbox from 'material-ui/Checkbox'
 import reportLogic from '../logic/report.logic'
 import constants from '../../constants'
+
+const styles = {
+  item: {
+    fontSize: 14
+  }
+}
 
 @connect({
   props: [
@@ -56,19 +62,47 @@ export default class ReportColumns extends React.Component {
         toggleColumnOtherCXProducts
       } = this.actions
 
+      if (!reportDrawer) return null
+
       return (
-        <div>
-          {reportDrawer && (<Menu desktop>
-            <Subheader>Additional columns</Subheader>
-            <MenuItem primaryText='Account Manager' checked={isColumnAMVisible} onClick={toggleColumnAM} />
-            <MenuItem primaryText='Implementation Consultant' checked={isColumnICVisible} onClick={toggleColumnIC} />
-            <MenuItem primaryText='Technical Consultant' checked={isColumnTCVisible} onClick={toggleColumnTC} />
-            <MenuItem primaryText='Technical Architect' checked={isColumnTAVisible} onClick={toggleColumnTA} />
-            <MenuItem primaryText='Kick-off date' checked={isColumnKickOffDateVisible} onClick={toggleColumnKickOffDate} />
-            <MenuItem primaryText={constants.friendlyLabels.cdcProducts} checked={isCDCProductsVisible} onClick={toggleColumnCDCProducts} />
-            <MenuItem primaryText='Other CX Solutions' checked={isOtherCXProductsVisible} onClick={toggleColumnOtherCXProducts} />
-          </Menu>)}
-        </div>
+
+        <Menu desktop>
+          <ListItem
+            primaryText='Additional Columns'
+            primaryTogglesNestedList
+            nestedItems={[
+              <MenuItem primaryText='Account Manager'
+                key={0} style={styles.item}
+                checked={isColumnAMVisible}
+                onClick={toggleColumnAM} />,
+              <MenuItem primaryText='Implementation Consultant'
+                key={1} style={styles.item}
+                checked={isColumnICVisible}
+                onClick={toggleColumnIC} />,
+              <MenuItem primaryText='Technical Consultant'
+                key={2} style={styles.item}
+                checked={isColumnTCVisible}
+                onClick={toggleColumnTC} />,
+              <MenuItem primaryText='Technical Architect'
+                key={3} style={styles.item}
+                checked={isColumnTAVisible}
+                onClick={toggleColumnTA} />,
+              <MenuItem primaryText='Kick-off date'
+                key={4} style={styles.item}
+                checked={isColumnKickOffDateVisible}
+                onClick={toggleColumnKickOffDate} />,
+              <MenuItem primaryText={constants.friendlyLabels.cdcProducts}
+                key={5} style={styles.item}
+                checked={isCDCProductsVisible}
+                onClick={toggleColumnCDCProducts} />,
+              <MenuItem primaryText='Other CX Solutions'
+                key={6} style={styles.item}
+                checked={isOtherCXProductsVisible}
+                onClick={toggleColumnOtherCXProducts} />
+            ]}
+          />
+        </Menu>
+
       )
     }
 }
