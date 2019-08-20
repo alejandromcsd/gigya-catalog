@@ -111,6 +111,7 @@ const converter = new Showdown.Converter({
       'icList',
       'tcList',
       'taList',
+      'implementationPartnerList',
       'countryList',
       'regionList',
       'platformList',
@@ -159,6 +160,7 @@ export default class PropertyEdit extends React.Component {
       ic: '',
       tc: '',
       ta: '',
+      implementationPartner: '',
       country: '',
       region: '',
       platform: '',
@@ -228,6 +230,7 @@ export default class PropertyEdit extends React.Component {
         ic: propertyOnEdit['IC'],
         tc: propertyOnEdit['TC'],
         ta: propertyOnEdit['TA'] || '',
+        implementationPartner: propertyOnEdit['ImplementationPartner'],
         country: propertyOnEdit['Country'],
         region: propertyOnEdit['Region'] || '',
         platform: propertyOnEdit['Platform'],
@@ -340,6 +343,7 @@ export default class PropertyEdit extends React.Component {
       ic,
       tc,
       ta,
+      implementationPartner,
       country,
       region,
       platform,
@@ -392,6 +396,7 @@ export default class PropertyEdit extends React.Component {
       'IC': ic,
       'TC': tc,
       'TA': ta,
+      'ImplementationPartner': implementationPartner,
       'Country': country,
       'Region': region,
       'Platform': platform,
@@ -433,6 +438,7 @@ export default class PropertyEdit extends React.Component {
       icList,
       tcList,
       taList,
+      implementationPartnerList,
       countryList,
       regionList,
       platformList,
@@ -460,6 +466,7 @@ export default class PropertyEdit extends React.Component {
       ic,
       tc,
       ta,
+      implementationPartner,
       country,
       region,
       platform,
@@ -629,17 +636,34 @@ export default class PropertyEdit extends React.Component {
               checked={useAsReference}
               onCheck={e => this.setState({ useAsReference: !this.state.useAsReference })}
             />
-            <TextField
-              floatingLabelText='Implementation Name (Required)'
-              value={implementation}
-              onChange={e => {
-                this.setState({implementation: e.target.value}, this.runValidations)
-              }}
-              errorText={this.state.errors.implementationError}
-              floatingLabelStyle={styles.floatingLabelStyle}
-              floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
-              fullWidth
-            />
+            <div style={styles.inline}>
+              <TextField
+                floatingLabelText='Implementation Name (Required)'
+                style={styles.inlineChild}
+                value={implementation}
+                onChange={e => {
+                  this.setState({implementation: e.target.value}, this.runValidations)
+                }}
+                errorText={this.state.errors.implementationError}
+                floatingLabelStyle={styles.floatingLabelStyle}
+                floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
+                fullWidth
+              />
+              <AutoComplete
+                floatingLabelText='Implementation Partner'
+                searchText={implementationPartner}
+                style={styles.inlineChild}
+                listStyle={styles.autoCompleteList}
+                filter={AutoComplete.fuzzyFilter}
+                dataSource={implementationPartnerList}
+                onUpdateInput={implementationPartner => this.setState({ implementationPartner })}
+                floatingLabelStyle={styles.floatingLabelStyle}
+                floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
+                onNewRequest={() => this.autoCompleteCustomer.focus()}
+                openOnFocus
+                fullWidth
+              />
+            </div>
             <div style={styles.inline}>
               <AutoComplete
                 floatingLabelText='Customer (Required)'

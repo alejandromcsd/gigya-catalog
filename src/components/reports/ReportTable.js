@@ -30,6 +30,7 @@ const styles = {
       'isColumnTCVisible',
       'isColumnTAVisible',
       'isColumnKickOffDateVisible',
+      'isColumnImplementationPartnerVisible',
       'isCDCProductsVisible',
       'isOtherCXProductsVisible'
     ]
@@ -39,6 +40,8 @@ export class ReportTable extends React.Component {
   showProperty = tile => {
     this.props.history.push(`/${tile['Id']}`)
   }
+
+  shortDate = date => date ? date.substring(4) : ''
 
   getOtherCXCellValue = tile => {
     let products = []
@@ -57,6 +60,7 @@ export class ReportTable extends React.Component {
       isColumnICVisible,
       isColumnTCVisible,
       isColumnTAVisible,
+      isColumnImplementationPartnerVisible,
       isColumnKickOffDateVisible,
       isCDCProductsVisible,
       isOtherCXProductsVisible
@@ -80,6 +84,7 @@ export class ReportTable extends React.Component {
               <TableHeaderColumn>Region</TableHeaderColumn>
               <TableHeaderColumn>Country</TableHeaderColumn>
               <TableHeaderColumn>Category</TableHeaderColumn>
+              {isColumnImplementationPartnerVisible && <TableHeaderColumn>Partner</TableHeaderColumn>}
               {isColumnAMVisible && <TableHeaderColumn>AM</TableHeaderColumn>}
               {isColumnICVisible && <TableHeaderColumn>IC</TableHeaderColumn>}
               {isColumnTCVisible && <TableHeaderColumn>TC</TableHeaderColumn>}
@@ -94,13 +99,14 @@ export class ReportTable extends React.Component {
                 selectable
                 key={tile['Id']}
               >
-                {isColumnKickOffDateVisible && <TableRowColumn>{tile['KickOffDate']}</TableRowColumn>}
-                <TableRowColumn>{tile['GoLiveDate']}</TableRowColumn>
+                {isColumnKickOffDateVisible && <TableRowColumn>{this.shortDate(tile['KickOffDate'])}</TableRowColumn>}
+                <TableRowColumn>{this.shortDate(tile['GoLiveDate'])}</TableRowColumn>
                 <TableRowColumn>{tile['Customer']}</TableRowColumn>
                 <TableRowColumn>{tile['Implementation']}</TableRowColumn>
                 <TableRowColumn>{tile['Region']}</TableRowColumn>
                 <TableRowColumn>{tile['Country']}</TableRowColumn>
                 <TableRowColumn>{tile['Category']}</TableRowColumn>
+                {isColumnImplementationPartnerVisible && <TableRowColumn>{tile['ImplementationPartner']}</TableRowColumn>}
                 {isColumnAMVisible && <TableRowColumn>{tile['AM']}</TableRowColumn>}
                 {isColumnICVisible && <TableRowColumn>{tile['IC']}</TableRowColumn>}
                 {isColumnTCVisible && <TableRowColumn>{tile['TC']}</TableRowColumn>}

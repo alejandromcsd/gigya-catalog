@@ -17,6 +17,7 @@ const styles = {
   props: [
     reportLogic, [
       'reportDrawer',
+      'isColumnImplementationPartnerVisible',
       'isColumnAMVisible',
       'isColumnICVisible',
       'isColumnTCVisible',
@@ -28,6 +29,7 @@ const styles = {
   ],
   actions: [
     reportLogic, [
+      'toggleColumnImplementationPartner',
       'toggleColumnAM',
       'toggleColumnIC',
       'toggleColumnTC',
@@ -44,6 +46,7 @@ export default class ReportColumns extends React.Component {
     render () {
       const {
         reportDrawer,
+        isColumnImplementationPartnerVisible,
         isColumnAMVisible,
         isColumnICVisible,
         isColumnTCVisible,
@@ -53,6 +56,7 @@ export default class ReportColumns extends React.Component {
         isOtherCXProductsVisible
       } = this.props
       const {
+        toggleColumnImplementationPartner,
         toggleColumnAM,
         toggleColumnIC,
         toggleColumnTC,
@@ -98,7 +102,11 @@ export default class ReportColumns extends React.Component {
               <MenuItem primaryText='Other CX Solutions'
                 key={6} style={styles.item}
                 checked={isOtherCXProductsVisible}
-                onClick={toggleColumnOtherCXProducts} />
+                onClick={toggleColumnOtherCXProducts} />,
+              <MenuItem primaryText='Implementation Partner'
+                key={7} style={styles.item}
+                checked={isColumnImplementationPartnerVisible}
+                onClick={toggleColumnImplementationPartner} />
             ]}
           />
         </Menu>

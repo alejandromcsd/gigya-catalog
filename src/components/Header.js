@@ -57,6 +57,7 @@ export default class Header extends React.Component {
       'Region': '',
       'Platform': '',
       'Category': '',
+      'ImplementationPartner': '',
       'Description': '',
       'TechnicalDescription': '',
       'Keywords': []

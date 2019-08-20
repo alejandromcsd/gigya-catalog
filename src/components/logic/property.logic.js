@@ -209,6 +209,9 @@ export default kea({
     countryList: [
       () => [selectors.properties], (p) => reduceToList(p, 'Country'), PropTypes.array
     ],
+    implementationPartnerList: [
+      () => [selectors.properties], (p) => reduceToList(p, 'ImplementationPartner'), PropTypes.array
+    ],
     regionList: [
       () => [], () => ['EMEA', 'NA', 'APJ'], PropTypes.array
     ],

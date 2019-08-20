@@ -4,6 +4,7 @@ import { kea } from 'kea'
 export default kea({
   actions: () => ({
     toggleReportDrawer: () => ({}),
+    toggleColumnImplementationPartner: () => ({}),
     toggleColumnAM: () => ({}),
     toggleColumnIC: () => ({}),
     toggleColumnTC: () => ({}),
@@ -17,6 +18,9 @@ export default kea({
   reducers: ({ actions }) => ({
     reportDrawer: [true, PropTypes.bool, {
       [actions.toggleReportDrawer]: (state) => !state
+    }],
+    isColumnImplementationPartnerVisible: [false, PropTypes.bool, {
+      [actions.toggleColumnImplementationPartner]: (state) => !state
     }],
     isColumnAMVisible: [false, PropTypes.bool, {
       [actions.toggleColumnAM]: (state) => !state

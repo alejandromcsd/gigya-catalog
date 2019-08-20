@@ -47,6 +47,7 @@ const constants = {
   },
   fields: {
     id: 'Id',
+    implementationPartner: 'ImplementationPartner',
     kickOffDate: 'KickOffDate',
     goLiveDate: 'GoLiveDate',
     customer: 'Customer',
