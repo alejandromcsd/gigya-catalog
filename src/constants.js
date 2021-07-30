@@ -1,6 +1,7 @@
 const constants = {
   pageSize: 16,
   appUrl: 'https://cdc-catalog.cfapps.eu10.hana.ondemand.com',
+  slackUrl: 'https://sap-cx.slack.com/archives/C01CG87K9B8',
   skipAttributes: [
     'Id',
     'ImageUrl',
@@ -41,9 +42,10 @@ const constants = {
     overridingLabel: 'Overriding native browser methods?',
     descriptionLabel: 'Implementation Description',
     technicalDetails: 'Technical Details',
-    productsLabel: 'Customer Data Cloud Products',
+    productsLabel: 'Customer Data Products',
     referenceLabel: 'Customer authorised to use this implementation as a reference?',
-    otherCXProducts: 'Other SAP CX Solutions'
+    otherCXProducts: 'Other SAP CX Solutions',
+    selectedKeywords: 'Selected keywords'
   },
   fields: {
     id: 'Id',
@@ -51,9 +53,15 @@ const constants = {
     kickOffDate: 'KickOffDate',
     goLiveDate: 'GoLiveDate',
     customer: 'Customer',
+    category: 'Category',
+    country: 'Country',
+    platform: 'Platform',
+    region: 'Region',
     useIdentity: 'UseIdentity',
     useConsent: 'UseConsent',
     useProfile: 'UseProfile',
+    useB2B: 'UseB2B',
+    useCDP: 'UseCDP',
     useCXMarketing: 'UseCXMarketing',
     useCXCommerce: 'useCXCommerce',
     useCXSales: 'useCXSales',
@@ -75,21 +83,28 @@ const constants = {
     url: 'Url'
   },
   friendlyLabels: {
-    identityProduct: 'Customer Identity',
-    consentProduct: 'Customer Consent',
+    identityProduct: 'CIAM for B2C',
+    b2bProduct: 'CIAM for B2B',
+    consentProduct: 'ECPM (Consent)',
+    cdpProduct: 'CDP',
     profileProduct: 'Customer Profile',
     marketingProduct: 'CX Marketing',
     commerceProduct: 'CX Commerce',
     salesProduct: 'CX Sales',
     servicesProduct: 'CX Services',
-    cdcProducts: 'CDC Products'
+    cdcProducts: 'CDC Products',
+    implementationPartner: 'Implementation Partner'
   },
   friendlyFilters: {
-    identityProduct: 'Customer Identity: Yes',
-    consentProduct: 'Customer Consent: Yes',
+    identityProduct: 'CIAM for B2C: Yes',
+    b2bProduct: 'CIAM for B2B: Yes',
+    cdpProduct: 'CDP: Yes',
+    consentProduct: 'ECPM (Consent): Yes',
     profileProduct: 'Customer Profile: Yes',
-    identityProductNOT: 'Customer Identity: No',
-    consentProductNOT: 'Customer Consent: No',
+    identityProductNOT: 'CIAM for B2C: No',
+    b2bProductNOT: 'CIAM for B2B: No',
+    cdpProductNOT: 'CDP: No',
+    consentProductNOT: 'ECPM (Consent): No',
     marketingProduct: 'CX Marketing: Yes',
     commerceProduct: 'CX Commerce: Yes',
     salesProduct: 'CX Sales: Yes',
@@ -105,9 +120,9 @@ const constants = {
     lastMonth: 'Last month'
   },
   productCombos: {
-    identity: 'Identity, Profile',
-    consent: 'Consent, Profile',
-    all: 'All CDC Products',
+    identity: 'CIAM (no Consent)',
+    consent: 'Consent (no CIAM)',
+    all: 'CIAM and Consent',
     crossPillar: 'Cross CX-pillar'
   },
   goLiveTemplate: `<p><strong>Sample template (Please delete if not in use):</strong></p>

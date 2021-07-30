@@ -5,23 +5,44 @@ import AutoComplete from 'material-ui/AutoComplete'
 import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar'
 import RaisedButton from 'material-ui/FlatButton'
 import PhoneIcon from 'material-ui/svg-icons/hardware/phone-iphone'
-import RetailIcon from 'material-ui/svg-icons/action/done-all'
+import RetailIcon from 'material-ui/svg-icons/communication/business'
 import MailIcon from 'material-ui/svg-icons/communication/contact-mail'
 import ChinaIcon from 'material-ui/svg-icons/social/public'
+import ProductIcon from 'material-ui/svg-icons/device/devices'
+import ImplementationIcon from 'material-ui/svg-icons/social/domain'
+import CategoryIcon from 'material-ui/svg-icons/places/business-center'
+import CustomerIcon from 'material-ui/svg-icons/communication/contacts'
+import PartnerIcon from 'material-ui/svg-icons/maps/local-parking'
+import KeywordIcon from 'material-ui/svg-icons/toggle/check-box'
 import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem'
 import propertyLogic from './logic/property.logic'
 import constants from '../constants'
 
 const styles = {
-  chipLabelStyle: {
+  filterContainer: {
+    width: 400
+  },
+  filterChip: {
+    background: '#354A5F',
+    padding: 7,
+    borderRadius: 15,
+    marginRight: 5,
     color: 'white'
+  },
+  filterIcon: {
+    color: 'white',
+    paddingTop: 10,
+    marginRight: 5
   },
   chipDeleteStyle: {
     fill: 'white'
   },
   chip: {
     margin: 4
+  },
+  chipLabelStyle: {
+    color: 'white'
   },
   wrapper: {
     display: 'flex',
@@ -41,7 +62,6 @@ const styles = {
     minWidth: 120
   },
   toolbar: {
-    overflowX: 'scroll'
   }
 }
 
@@ -54,8 +74,59 @@ export class PropertyFilters extends React.Component {
     searchText: ''
   }
 
-  handleNewRequest = text => {
-    this.actions.addFilter(text)
+  constructor () {
+    super()
+    this.keywordsStyled = []
+  }
+
+  componentWillReceiveProps ({ keywords }) {
+    if ((!this.keywordsStyled.length && keywords.length) ||
+    (this.props.keywords.length && !this.arrayEquals(this.props.keywords, keywords))) {
+      this.keywordsStyled = keywords.map(item => {
+        return {
+          text: item,
+          value: (
+            <MenuItem
+              primaryText={(
+                <div style={styles.filterContainer}>
+                  {this.renderFilterIcon(item)}
+                  <span>{item.split(':')[1]}</span>
+                </div>)}
+            />
+          )
+        }
+      })
+    }
+  }
+
+  renderFilterIcon = (filter) => {
+    const icons = []
+    icons[constants.fields.implementation] = <CategoryIcon style={styles.filterIcon} />
+    icons[constants.fields.category] = <ImplementationIcon style={styles.filterIcon} />
+    icons[constants.fields.country] = <ChinaIcon style={styles.filterIcon} />
+    icons[constants.fields.region] = <ChinaIcon style={styles.filterIcon} />
+    icons[constants.fields.customer] = <CustomerIcon style={styles.filterIcon} />
+    icons[constants.fields.implementationPartner] = <PartnerIcon style={styles.filterIcon} />
+    icons[constants.fields.platform] = <PhoneIcon style={styles.filterIcon} />
+    icons['Keyword'] = <KeywordIcon style={styles.filterIcon} />
+
+    const category = filter.split(':')[0]
+    return (<span style={styles.filterChip}>
+      {icons[category] || <ProductIcon style={styles.filterIcon} />}
+      {`${category}:`}</span>)
+  }
+
+  arrayEquals = (a, b) => {
+    return Array.isArray(a) &&
+      Array.isArray(b) &&
+      a.length === b.length &&
+      a.every((val, index) => val === b[index])
+  }
+
+  handleNewRequest = selectedItem => {
+    const { keywords } = this.props
+    if (!keywords.includes(selectedItem.text)) return false
+    this.actions.addFilter(selectedItem.text)
     this.setState({
       searchText: ''
     })
@@ -84,7 +155,7 @@ export class PropertyFilters extends React.Component {
   currentFilters = filters => <div style={styles.wrapper}>{filters.map(this.renderChip, this)}</div>
 
   render () {
-    const { keywords, filters, sortBy, fullScreen } = this.props
+    const { filters, sortBy, fullScreen } = this.props
     const { setSortBy, addFilter } = this.actions
     const { searchText } = this.state
 
@@ -104,9 +175,9 @@ export class PropertyFilters extends React.Component {
             <ToolbarTitle style={styles.toolbarTitle} text='Quick filters:' />
             <RaisedButton
               style={styles.button}
-              label='Consent'
+              label={constants.friendlyLabels.b2bProduct}
               icon={<RetailIcon />}
-              onClick={() => addFilter(constants.friendlyFilters.consentProduct)}
+              onClick={() => addFilter(constants.friendlyFilters.b2bProduct)}
             />
             <RaisedButton
               style={styles.button}
@@ -151,7 +222,7 @@ export class PropertyFilters extends React.Component {
           style={styles.autoComplete}
           listStyle={styles.autoCompleteList}
           filter={AutoComplete.fuzzyFilter}
-          dataSource={keywords}
+          dataSource={this.keywordsStyled}
           onUpdateInput={this.handleUpdateInput}
           onNewRequest={this.handleNewRequest}
           openOnFocus

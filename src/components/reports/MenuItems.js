@@ -8,6 +8,8 @@ import IdentityIcon from 'material-ui/svg-icons/action/account-box'
 import AllIcon from 'material-ui/svg-icons/places/all-inclusive'
 import CrossIcon from 'material-ui/svg-icons/action/view-week'
 import CalendarIcon from 'material-ui/svg-icons/action/date-range'
+import B2BIcon from 'material-ui/svg-icons/communication/business'
+import CDPIcon from 'material-ui/svg-icons/communication/contacts'
 import NAIcon from 'material-ui/svg-icons/editor/attach-money'
 import EMEAIcon from 'material-ui/svg-icons/action/euro-symbol'
 import APJIcon from 'material-ui/svg-icons/action/translate'
@@ -169,7 +171,6 @@ export class SecondaryListItems extends React.Component {
       removeFilter(constants.friendlyFilters.identityProductNOT)
       removeFilter(constants.friendlyFilters.consentProductNOT)
       removeFilter(constants.friendlyFilters.crossPillar)
-      addFilter(constants.friendlyFilters.profileProduct)
 
       products.forEach(p => addFilter(p))
     }
@@ -180,12 +181,12 @@ export class SecondaryListItems extends React.Component {
       removeFilter(constants.friendlyFilters.consentProduct)
       removeFilter(constants.friendlyFilters.identityProductNOT)
       removeFilter(constants.friendlyFilters.consentProductNOT)
-      removeFilter(constants.friendlyFilters.profileProduct)
       addFilter(constants.friendlyFilters.crossPillar)
     }
 
     render () {
       const { reportDrawer } = this.props
+      const { addFilter } = this.actions
 
       if (!reportDrawer) return null
 
@@ -204,7 +205,13 @@ export class SecondaryListItems extends React.Component {
               <MenuItem style={styles.item} key={2} primaryText={constants.productCombos.all}
                 onClick={() => this.filterProduct([constants.friendlyFilters.identityProduct, constants.friendlyFilters.consentProduct])}
                 leftIcon={<AllIcon />} />,
-              <MenuItem style={styles.item} key={3} primaryText={constants.productCombos.crossPillar}
+              <MenuItem style={styles.item} key={3} primaryText={constants.friendlyLabels.b2bProduct}
+                onClick={() => addFilter(constants.friendlyFilters.b2bProduct)}
+                leftIcon={<B2BIcon />} />,
+              <MenuItem style={styles.item} key={4} primaryText={constants.friendlyLabels.cdpProduct}
+                onClick={() => addFilter(constants.friendlyFilters.cdpProduct)}
+                leftIcon={<CDPIcon />} />,
+              <MenuItem style={styles.item} key={5} primaryText={constants.productCombos.crossPillar}
                 onClick={this.filterCrossPillar}
                 leftIcon={<CrossIcon />} />
             ]}

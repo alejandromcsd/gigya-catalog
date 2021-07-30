@@ -6,6 +6,8 @@ import 'typeface-roboto'
 import './App.css'
 import PropertyContainer from './components/PropertyContainer'
 
+// JIM
+
 const muiTheme = getMuiTheme({
   palette: {
     primary1Color: '#354A5F',

@@ -57,7 +57,8 @@ const styles = {
     padding: 15
   },
   drawerOpen: {
-    width: 240
+    width: 240,
+    overflowX: 'hidden'
   },
   drawerClosed: {
     width: 60

@@ -3,12 +3,13 @@ import { connect } from 'kea'
 import AppBar from 'material-ui/AppBar'
 import NavigationClose from 'material-ui/svg-icons/file/folder-shared'
 import Open from 'material-ui/svg-icons/action/aspect-ratio'
+import Chat from 'material-ui/svg-icons/communication/chat'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
-import {ToolbarTitle} from 'material-ui/Toolbar'
 import propertyLogic from './logic/property.logic'
 import { logout, showProfile } from '../gigya'
 import { isMobile } from '../utils'
+import constants from '../constants'
 
 const styles = {
   title: {
@@ -71,7 +72,7 @@ export default class Header extends React.Component {
     if (!currentUser) return null
     return (
       <AppBar
-        title={<span>Customer Data Cloud: Go-Lives Catalog</span>}
+        title={<span>Customer Data Go-Lives Catalog</span>}
         style={styles.bar}
         titleStyle={styles.header}
         iconElementLeft={<IconButton><NavigationClose /></IconButton>}
@@ -79,15 +80,15 @@ export default class Header extends React.Component {
           <div>
             {(currentUser && currentUser.profile) && (
               <div>
-                <ToolbarTitle style={styles.title} text={isMobile() ? ' ' : `Hi ${currentUser.profile.firstName}!`} />
-                {/* <FlatButton style={styles.button} onClick={showCommunications} label='COMMUNICATIONS' />
-                <FlatButton style={styles.button} onClick={showPrivacy} label='PRIVACY' /> */}
-                <FlatButton style={styles.button} onClick={showProfile} label='PROFILE' />
+                <FlatButton style={styles.button} onClick={showProfile} label='YOUR ACCOUNT' />
                 { !isMobile() &&
                 <FlatButton style={styles.button} onClick={this.addImplementation} label='ADD NEW IMPLEMENTATION' />
                 }
                 <FlatButton style={styles.button} onClick={logout} label='LOGOUT' />
 
+                <IconButton tooltip='Go to Slack channel' tooltipPosition='bottom-left' onClick={() => window.open(constants.slackUrl, '_blank')}>
+                  <Chat color={styles.button.color} />
+                </IconButton>
                 <IconButton tooltip='Full screen' tooltipPosition='bottom-left' onClick={() => toggleFullScreen()}>
                   <Open color={styles.button.color} />
                 </IconButton>

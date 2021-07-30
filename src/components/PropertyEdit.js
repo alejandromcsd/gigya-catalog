@@ -7,6 +7,7 @@ import {
   StepButton,
   StepLabel
 } from 'material-ui/Stepper'
+import Chip from 'material-ui/Chip'
 import WarningIcon from 'material-ui/svg-icons/alert/warning'
 import TextField from 'material-ui/TextField'
 import MenuItem from 'material-ui/MenuItem'
@@ -92,6 +93,20 @@ const styles = {
   },
   editorContainer: {
     color: '#333333'
+  },
+  wrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    marginBottom: 10
+  },
+  chip: {
+    margin: 4
+  },
+  chipLabelStyle: {
+    color: 'white'
+  },
+  chipDeleteStyle: {
+    fill: 'white'
   }
 }
 
@@ -138,6 +153,8 @@ export default class PropertyEdit extends React.Component {
     this.state = {
       withNotification: true,
       useIdentity: false,
+      useB2B: false,
+      useCDP: false,
       useConsent: false,
       useProfile: false,
       useCXMarketing: false,
@@ -189,7 +206,8 @@ export default class PropertyEdit extends React.Component {
       visited: [],
       descriptionMKTab: 'write',
       technicalDescriptionMKTab: 'write',
-      pendingErrors: false
+      pendingErrors: false,
+      keywordSearchText: ''
     }
   }
 
@@ -209,8 +227,10 @@ export default class PropertyEdit extends React.Component {
     if (propertyOnEdit && JSON.stringify(propertyOnEdit) !== JSON.stringify(this.props.propertyOnEdit)) {
       this.setState({
         useIdentity: propertyOnEdit[constants.fields.useIdentity] || false,
+        useB2B: propertyOnEdit[constants.fields.useB2B] || false,
+        useCDP: propertyOnEdit[constants.fields.useCDP] || false,
         useConsent: propertyOnEdit[constants.fields.useConsent] || false,
-        useProfile: propertyOnEdit[constants.fields.useProfile] || true,
+        useProfile: propertyOnEdit[constants.fields.useProfile] || false,
         useCXMarketing: propertyOnEdit[constants.fields.useCXMarketing] || false,
         useCXCommerce: propertyOnEdit[constants.fields.useCXCommerce] || false,
         useCXSales: propertyOnEdit[constants.fields.useCXSales] || false,
@@ -264,6 +284,28 @@ export default class PropertyEdit extends React.Component {
         pendingErrors: false
       })
     }
+  }
+
+  handleNewKeyword = selectedItem => {
+    const {keywords} = this.state
+    this.setState({
+      keywords: keywords.includes(selectedItem) ? keywords : [...keywords, selectedItem],
+      keywordSearchText: ''
+    })
+  }
+
+  removeKeyword = selectedItem => {
+    const {keywords} = this.state
+    this.setState({
+      keywords: keywords.filter(k => k !== selectedItem),
+      keywordSearchText: ''
+    })
+  }
+
+  handleUpdateKeywordInput = searchText => {
+    this.setState({
+      keywordSearchText: searchText
+    })
   }
 
   handleNext = () => {
@@ -325,8 +367,9 @@ export default class PropertyEdit extends React.Component {
     const {
       customer,
       useIdentity,
+      useB2B,
+      useCDP,
       useConsent,
-      useProfile,
       useCXMarketing,
       useCXCommerce,
       useCXSales,
@@ -373,8 +416,10 @@ export default class PropertyEdit extends React.Component {
     this.actions.submitPropertyEdit({
       [constants.fields.id]: this.props.propertyOnEdit['Id'] || this.props.nextId,
       [constants.fields.useIdentity]: useIdentity || false,
+      [constants.fields.useB2B]: useB2B || false,
+      [constants.fields.useCDP]: useCDP || false,
       [constants.fields.useConsent]: useConsent || false,
-      [constants.fields.useProfile]: useProfile || false,
+      [constants.fields.useProfile]: useIdentity || useConsent,
       [constants.fields.useCXMarketing]: useCXMarketing || false,
       [constants.fields.useCXCommerce]: useCXCommerce || false,
       [constants.fields.useCXSales]: useCXSales || false,
@@ -396,11 +441,11 @@ export default class PropertyEdit extends React.Component {
       'IC': ic,
       'TC': tc,
       'TA': ta,
-      'ImplementationPartner': implementationPartner,
-      'Country': country,
-      'Region': region,
-      'Platform': platform,
-      'Category': category,
+      'ImplementationPartner': implementationPartner || null,
+      'Country': country || null,
+      'Region': region || null,
+      'Platform': platform || null,
+      'Category': category || null,
       [constants.fields.tdd]: tddUrl || '',
       [constants.fields.apiKey]: apiKey || '',
       [constants.fields.customFlows]: this.encodeTextbox(customFlows),
@@ -415,7 +460,7 @@ export default class PropertyEdit extends React.Component {
       [constants.fields.technicalDescription]: technicalDescription ? converter.makeHtml(technicalDescription) : '',
       [constants.fields.keywords]: [
         ...keywords,
-        ...(otherKeywords.length ? otherKeywords.split(',').map(v => v.trim()) : [])
+        ...(otherKeywords.length ? otherKeywords.split(',').map(v => v.trim()).filter(k => k.length > 0 && !keywords.includes(k)) : [])
       ]
     }, isUpdate, withNotification)
 
@@ -428,6 +473,23 @@ export default class PropertyEdit extends React.Component {
       kickOffError: ''
     },
     pendingErrors: false})
+  }
+
+  currentFilters = filters => (<div style={styles.wrapper}>{filters.length
+    ? filters.map(this.renderChip, this) : 'None, please enter a keyword'}</div>)
+
+  renderChip = data => {
+    return (
+      <Chip
+        key={data}
+        style={styles.chip}
+        labelColor={styles.chipLabelStyle.color}
+        deleteIconStyle={styles.chipDeleteStyle}
+        onRequestDelete={() => this.removeKeyword(data)}
+      >
+        {data}
+      </Chip>
+    )
   }
 
   render () {
@@ -451,8 +513,9 @@ export default class PropertyEdit extends React.Component {
     const {
       customer,
       useIdentity,
+      useB2B,
+      useCDP,
       useConsent,
-      useProfile,
       useCXMarketing,
       useCXCommerce,
       useCXSales,
@@ -482,13 +545,13 @@ export default class PropertyEdit extends React.Component {
       description,
       technicalDescription,
       keywords,
-      otherKeywords,
       withNotification,
       stepIndex,
       visited,
       descriptionMKTab,
       technicalDescriptionMKTab,
-      pendingErrors
+      pendingErrors,
+      keywordSearchText
     } = this.state
 
     if (!propertyOnEdit) return null
@@ -585,22 +648,28 @@ export default class PropertyEdit extends React.Component {
             <label style={styles.label}>{constants.labels.productsLabel}</label>
             <div style={styles.inline}>
               <Checkbox
-                label='Customer Identity'
+                label={constants.friendlyLabels.identityProduct}
                 checked={useIdentity}
                 onCheck={e => this.setState({ useIdentity: !this.state.useIdentity })}
                 style={styles.checkbox}
               />
               <Checkbox
-                label='Customer Consent'
+                label={constants.friendlyLabels.b2bProduct}
+                checked={useB2B}
+                onCheck={e => this.setState({ useB2B: !this.state.useB2B })}
+                style={styles.checkbox}
+              />
+              <Checkbox
+                label={constants.friendlyLabels.consentProduct}
                 checked={useConsent}
                 onCheck={e => this.setState({ useConsent: !this.state.useConsent })}
                 style={styles.checkbox}
               />
               <Checkbox
-                label='Customer Profile'
-                checked={useProfile}
+                label={constants.friendlyLabels.cdpProduct}
+                checked={useCDP}
+                onCheck={e => this.setState({ useCDP: !this.state.useCDP })}
                 style={styles.checkbox}
-                onCheck={e => this.setState({ useProfile: !this.state.useProfile })}
               />
             </div>
             <label style={styles.label}>{constants.labels.otherCXProducts}</label>
@@ -867,16 +936,24 @@ export default class PropertyEdit extends React.Component {
                     primaryText={keyword}
                   />)) }
               </SelectField>
-              <TextField
+
+              <AutoComplete
+                floatingLabelText='Other keywords (press ENTER to add a new keyword)'
+                searchText={keywordSearchText}
+                filter={AutoComplete.fuzzyFilter}
+                dataSource={keywordsList}
+                onUpdateInput={this.handleUpdateKeywordInput}
+                onNewRequest={this.handleNewKeyword}
                 style={styles.inlineChild}
-                floatingLabelText='Other keywords (comma separated)'
-                value={otherKeywords}
-                onChange={e => this.setState({ otherKeywords: e.target.value })}
-                floatingLabelStyle={styles.floatingLabelStyle}
-                floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
+                listStyle={styles.autoCompleteList}
+                openOnFocus
                 fullWidth
               />
             </div>
+
+            <label style={styles.label}>{constants.labels.selectedKeywords}</label>
+            {this.currentFilters(keywords)}
+
           </div>)}
 
           {stepIndex === 1 && (<div style={styles.editorContainer}>

@@ -34,6 +34,9 @@ const styles = {
     height: 160,
     maxHeight: 160,
     overflowY: 'hidden'
+  },
+  actions: {
+    textAlign: 'center'
   }
 }
 
@@ -98,7 +101,7 @@ export class PropertyGrid extends React.Component {
                   <CardMedia style={styles.media}>
                     <img src={tile['ImageUrl']} alt={tile['Implementation']} />
                   </CardMedia>
-                  <CardActions>
+                  <CardActions style={styles.actions}>
                     <FlatButton primary label='View' onClick={() => this.showProperty(tile)} />
                   </CardActions>
                 </Card>

@@ -46,7 +46,7 @@ export function sendNotification (msg) {
     fields:"profile.email",
     callback: (response) => {
       if(response.errorCode == 0) {
-        fetch('https://api-catalog.cfapps.us10.hana.ondemand.com/notification/send', {
+        fetch('https://api-catalog.cfapps.eu10.hana.ondemand.com/notification/send', {
           method: 'post',
           headers: new Headers({
             'Authorization': `Bearer ${response.id_token}`,
@@ -73,7 +73,7 @@ export function sendEmail (address, customer, implementation) {
     fields:"profile.email",
     callback: (response) => {
       if(response.errorCode == 0) {
-        fetch('https://api-catalog.cfapps.us10.hana.ondemand.com/email/send', {
+        fetch('https://api-catalog.cfapps.eu10.hana.ondemand.com/email/send', {
           method: 'post',
           headers: new Headers({
             'Authorization': `Bearer ${response.id_token}`,
@@ -111,7 +111,7 @@ export function getAccountInfo (callback) {
         var token = JSON.parse(window.atob(base64));
 
         // Get Firebase JWT
-        fetch('https://api-catalog.cfapps.us10.hana.ondemand.com/firebase/getToken', {
+        fetch('https://api-catalog.cfapps.eu10.hana.ondemand.com/firebase/getToken', {
           method: 'post',
           headers: new Headers({
             'Authorization': `Bearer ${response.id_token}`

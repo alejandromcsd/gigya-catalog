@@ -256,22 +256,28 @@ export class PropertyDetails extends React.Component {
               <div style={styles.productsContainer}>
                 <MobileTearSheet>
                   <List>
-                    <Subheader>SAP Customer Data Cloud Products</Subheader>
+                    <Subheader>SAP Customer Data Products</Subheader>
                     {selectedProperty[constants.fields.useIdentity] &&
                     <ListItem
-                      primaryText='Customer Identity'
+                      primaryText={constants.friendlyLabels.identityProduct}
+                      disabled
+                    />
+                    }
+                    {selectedProperty[constants.fields.useB2B] &&
+                    <ListItem
+                      primaryText={constants.friendlyLabels.b2bProduct}
                       disabled
                     />
                     }
                     {selectedProperty[constants.fields.useConsent] &&
                     <ListItem
-                      primaryText='Customer Consent'
+                      primaryText={constants.friendlyLabels.consentProduct}
                       disabled
                     />
                     }
-                    {selectedProperty[constants.fields.useProfile] &&
+                    {selectedProperty[constants.fields.useCDP] &&
                     <ListItem
-                      primaryText='Customer Profile'
+                      primaryText={constants.friendlyLabels.cdpProduct}
                       disabled
                     />
                     }
@@ -380,7 +386,7 @@ export class PropertyDetails extends React.Component {
                 {selectedProperty[constants.fields.tdd] &&
                 <div style={styles.subDetailSection}>
                   <div style={styles.headerLabel}>{constants.labels.tddLabel}</div>
-                  <div dangerouslySetInnerHTML={{__html: toHTML(selectedProperty[constants.fields.tdd])}} />
+                  <a target='_blank' href={selectedProperty[constants.fields.tdd]}>Click here to access the document</a>
                 </div>
                 }
 

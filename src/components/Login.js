@@ -53,7 +53,7 @@ export default class Login extends React.Component {
     return (
       <div>
         <Dialog
-          title='Customer Data Cloud Catalog'
+          title='Customer Data Catalog'
           titleStyle={styles.dialogTitle}
           modal
           autoScrollBodyContent

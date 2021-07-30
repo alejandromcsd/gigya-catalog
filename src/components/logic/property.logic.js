@@ -117,8 +117,12 @@ export default kea({
           // friendly keys replacement (i.e. from Product Name: Yes to use useConsent: true)
           const unfriendlyKeys = (rawKey) => ({
             [constants.friendlyFilters.identityProduct]: `${constants.fields.useIdentity}: true`,
+            [constants.friendlyFilters.b2bProduct]: `${constants.fields.useB2B}: true`,
+            [constants.friendlyFilters.cdpProduct]: `${constants.fields.useCDP}: true`,
             [constants.friendlyFilters.consentProduct]: `${constants.fields.useConsent}: true`,
             [constants.friendlyFilters.identityProductNOT]: `${constants.fields.useIdentity}: false`,
+            [constants.friendlyFilters.b2bProductNOT]: `${constants.fields.useB2B}: false`,
+            [constants.friendlyFilters.cdpProductNOT]: `${constants.fields.useCDP}: false`,
             [constants.friendlyFilters.consentProductNOT]: `${constants.fields.useConsent}: false`,
             [constants.friendlyFilters.profileProduct]: `${constants.fields.useProfile}: true`,
             [constants.friendlyFilters.marketingProduct]: `${constants.fields.useCXMarketing}: true`,
@@ -128,7 +132,13 @@ export default kea({
           })[rawKey] || rawKey
 
           filter = unfriendlyKeys(filter)
-          const filterCategory = removeCategoryValue(filter)
+          var filterCategory = removeCategoryValue(filter)
+
+          // Replace additional friendly names
+          const unfriendlyCategory = (rawKey) => ({
+            [constants.friendlyLabels.implementationPartner]: constants.fields.implementationPartner
+          })[rawKey] || rawKey
+          filterCategory = unfriendlyCategory(filterCategory)
 
           // actual filter happens here: look into keywords > field values
           return ((!filterCategory || filterCategory === 'Keyword') &&
@@ -169,12 +179,15 @@ export default kea({
           // friendly keys replacement (i.e. from use useConsent: true to Product Name: Yes)
           const friendlyKeys = (rawKey) => ({
             [constants.fields.useIdentity]: constants.friendlyLabels.identityProduct,
+            [constants.fields.useB2B]: constants.friendlyLabels.b2bProduct,
+            [constants.fields.useCDP]: constants.friendlyLabels.cdpProduct,
             [constants.fields.useConsent]: constants.friendlyLabels.consentProduct,
             [constants.fields.useProfile]: constants.friendlyLabels.profileProduct,
             [constants.fields.useCXMarketing]: constants.friendlyLabels.marketingProduct,
             [constants.fields.useCXCommerce]: constants.friendlyLabels.commerceProduct,
             [constants.fields.useCXSales]: constants.friendlyLabels.salesProduct,
-            [constants.fields.useCXServices]: constants.friendlyLabels.servicesProduct
+            [constants.fields.useCXServices]: constants.friendlyLabels.servicesProduct,
+            [constants.fields.implementationPartner]: constants.friendlyLabels.implementationPartner
           })[rawKey] || rawKey
 
           const keyVal = `${friendlyKeys(key)}: ${item[key] === true ? 'Yes' : item[key]}`
@@ -329,7 +342,7 @@ export default kea({
                 }
               ],
               image_url: property[constants.fields.imageUrl],
-              footer: 'Customer Data Cloud Catalog',
+              footer: 'Customer Data Catalog',
               footer_icon: 'https://platform.slack-edge.com/img/default_application_icon.png',
               ts: Math.round(+new Date() / 1000),
               actions: [
