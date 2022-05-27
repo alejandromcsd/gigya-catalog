@@ -14,20 +14,6 @@ This project serves as a portfolio. Originally intended as a catalog of websites
 
 Note: JWT Authentication w/ Firebase, and integration with SpartPost/Slack APIs is done via simple Node JS, not part of this repo.
 
-## Screenshots
-
-Grid view:
-![Catalog Preview 1](https://alejandro.gigya-cs.com/images/catalog1.png)
-
-Auto complete filter:
-![Catalog Preview 2](https://alejandro.gigya-cs.com/images/catalog2.png)
-
-Item preview:
-![Catalog Preview 3](https://alejandro.gigya-cs.com/images/catalog3.png)
-
-Item edition:
-![Catalog Preview 4](https://alejandro.gigya-cs.com/images/catalog4.png)
-
 ## Deployment
 
 ```
